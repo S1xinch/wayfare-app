@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *)); /* Wayfare trips area only: it toggles .dark on its own wrapper */
 
 @theme {
   --color-brand: #0066cc;
@@ -6,6 +7,10 @@
   --color-paper: #eeeeee;
   --color-deal: #28a745;
   --color-high: #dc3545;
+  /* Wayfare trips area */
+  --color-primary-600: #0066cc;
+  --color-success: #10b981;
+  --color-danger: #ef4444;
 }
 
 html {
@@ -163,8 +168,8 @@ html[data-standalone="true"] .back { display: inline-flex; }
 .sheet-body { overflow: auto; overscroll-behavior: contain; padding: 0 16px calc(16px + env(safe-area-inset-bottom)); }
 
 /* ---------- Startup splash (installed app only, once per launch) ----------
-   Matches the native launch image (/pwa/splash): brand blue, plane at 22% of the short edge, title below.
-   When the app is ready the plane tips back, then flies off to the upper right while the splash fades. */
+   Matches the native launch image: brand blue, route-W logo at 22% of the short edge, title below.
+   When the app is ready the logo fades and grows slightly while the splash fades. */
 .splash {
   display: none; position: fixed; inset: 0; z-index: 200; flex-direction: column; align-items: center; justify-content: center;
   background: var(--color-brand); color: #fff; overflow: hidden;
@@ -179,14 +184,19 @@ html[data-splash-force]:not([data-splash="done"]) .splash { display: flex; }
 .splash--go .splash-plane { animation: plane-away 1.05s cubic-bezier(0.55, 0, 0.85, 0.35) forwards; }
 .splash--go .splash-title { animation: title-out 0.3s ease-out forwards; }
 @keyframes plane-away {
-  0% { transform: translate(0, 0) rotate(0) scale(1); }
-  18% { transform: translate(-1.5vmin, 1.5vmin) rotate(-6deg) scale(0.96); } /* the little wind-up before take-off */
-  100% { transform: translate(85vmax, -85vmax) rotate(14deg) scale(1.5); }
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.25); opacity: 0; }
 }
+/* route-W logo draws in while the app loads */
+.splash .route { stroke-dasharray: 150; stroke-dashoffset: 150; animation: route-draw 1s 0.1s cubic-bezier(0.65, 0, 0.35, 1) forwards; }
+.splash .dot { transform-origin: 82px 30px; animation: dot-pop 0.5s 1s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+@keyframes route-draw { to { stroke-dashoffset: 0; } }
+@keyframes dot-pop { from { transform: scale(0); } to { transform: none; } }
 @keyframes title-out { to { opacity: 0; transform: translateY(1.5vw); } }
 @keyframes splash-out { to { opacity: 0; visibility: hidden; } }
 @media (prefers-reduced-motion: reduce) {
-  .splash--go .splash-plane, .splash--go .splash-title { animation: none; }
+  .splash--go .splash-plane, .splash--go .splash-title, .splash .route, .splash .dot { animation: none; }
+  .splash .route { stroke-dashoffset: 0; }
   .splash--go { animation: splash-out 0.25s ease-out 0s forwards; }
 }
 

@@ -6,6 +6,8 @@ const secret = () => new TextEncoder().encode(process.env.JWT_SECRET!);
 
 export const hashPw = (p: string) => bcrypt.hash(p, 12);
 export const checkPw = (p: string, h: string) => bcrypt.compare(p, h);
+// compared when the email is unknown, so a miss costs the same as a wrong password
+export const DUMMY_HASH = bcrypt.hashSync("wayfare-dummy-password", 12);
 
 export async function setSession(uid: number) {
   const jwt = await new SignJWT({})

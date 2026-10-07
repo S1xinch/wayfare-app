@@ -1,0 +1,49 @@
+/* Wayfare's styles, scoped under .wf so its .card/.btn/.input don't fight flight-finder's (both define them).
+   Page chrome (body, header, links) belongs to globals.css; the dark variant is class-based and only themes this area. */
+.wf {
+  font-size: 14px; line-height: 1.5; color: #4b5563;
+  min-height: 60vh; padding: 24px 16px max(24px, env(safe-area-inset-bottom));
+  max-width: 1216px; margin: 0 auto;
+  -webkit-tap-highlight-color: transparent;
+
+  &.dark { color: #cbd5e1; background: #0f1419; }
+  h1, h2, h3 { color: #1a202c; }
+  &.dark :is(h1, h2, h3) { color: #f1f5f9; }
+  h1 { font-size: 32px; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; }
+  h2 { font-size: 24px; font-weight: 600; line-height: 1.3; }
+  h3 { font-size: 18px; font-weight: 600; }
+  button, summary { touch-action: manipulation; -webkit-user-select: none; user-select: none; }
+  :focus-visible { outline: 2px solid #0066cc; outline-offset: 2px; }
+  &.dark :focus-visible { outline-color: #60a5fa; }
+
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  &.dark .card { background: #1a1f2e; border-color: #2d333f; box-shadow: none; }
+  .btn { padding: 12px 20px; border-radius: 6px; font-weight: 600; background: #0066cc; color: #fff; min-height: 44px; cursor: pointer; transition: background 200ms ease-out; }
+  .btn:hover { background: #0052a3; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .btn-secondary { background: transparent; color: #0066cc; border: 1px solid #e5e7eb; }
+  .btn-secondary:hover { background: #f3f4f6; }
+  &.dark .btn-secondary { color: #60a5fa; border-color: #2d333f; }
+  &.dark .btn-secondary:hover { background: #1a1f2e; }
+  .btn-danger { background: #ef4444; }
+  .btn-danger:hover { background: #dc2626; }
+  .input { width: 100%; padding: 12px 14px; border: 1px solid #e5e7eb; border-radius: 6px; background: #fff; color: inherit; min-height: 44px; font-size: 16px; }
+  &.dark .input { background: #0f1419; border-color: #2d333f; }
+  .input:focus { border-color: #0066cc; outline: 2px solid #0066cc; outline-offset: 0; }
+  .label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: #1a202c; }
+  &.dark .label { color: #f1f5f9; }
+  .caption { font-size: 12px; font-weight: 500; color: #4b5563; }
+  &.dark .caption { color: #94a3b8; }
+  .mono { font-family: Monaco, "Courier New", monospace; font-size: 13px; }
+
+  /* Ideas tab: "Add" confirmation */
+  .btn-added { background: #10b981; border: 1px solid #10b981; color: #fff; animation: added-pop .5s cubic-bezier(.34, 1.56, .64, 1); }
+  .btn-added:disabled { opacity: 1; cursor: default; }
+  .btn-added .check { display: inline-block; animation: added-check .4s .1s cubic-bezier(.34, 1.56, .64, 1) both; }
+  .idea-flash { animation: idea-flash 1.2s ease-out; }
+}
+.leaflet-container { z-index: 0; }
+@keyframes added-pop { 0% { transform: scale(.88); } 55% { transform: scale(1.12); } 100% { transform: scale(1); } }
+@keyframes added-check { from { transform: scale(0) rotate(-40deg); } to { transform: none; } }
+@keyframes idea-flash { 0% { background-color: rgba(16, 185, 129, .25); } 100% { background-color: transparent; } }
+@media (prefers-reduced-motion: reduce) { .wf .btn-added, .wf .btn-added .check, .wf .idea-flash { animation: none; } }

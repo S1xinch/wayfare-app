@@ -63,8 +63,8 @@ const icon = (d: string) => (
 export function TabBar({ signedIn }: { signedIn: boolean }) {
   const path = usePathname();
   const tabs = [
-    { href: "/", label: "Search", on: path === "/" || path === "/results", d: "M21 21l-4.3-4.3M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" },
-    { href: "/#deals", label: "Deals", on: false, d: "M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8zM7.5 7.5h.01" },
+    { href: "/", label: "Flights", on: path === "/" || path === "/results", d: "M21 21l-4.3-4.3M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" },
+    { href: "/trips", label: "Trips", on: path.startsWith("/trips"), d: "M3 7l6-3 6 3 6-3v13l-6 3-6-3-6 3zM9 4v13M15 7v13" },
     {
       href: signedIn ? "/dashboard" : "/login",
       label: signedIn ? "Account" : "Sign in",
@@ -100,7 +100,7 @@ export function InstallHint() {
   return (
     <section className="card install-hint" aria-label="Install the app">
       <p>
-        <strong>Install Flight Finder.</strong> Tap{" "}
+        <strong>Install Wayfare.</strong> Tap{" "}
         <svg style={{ display: "inline", verticalAlign: "-3px" }} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-label="Share">
           <path d="M12 3v12M8 7l4-4 4 4M5 12v8h14v-8" />
         </svg>{" "}

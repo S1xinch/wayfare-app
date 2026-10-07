@@ -1,15 +1,19 @@
-# Flight Finder
+# Wayfare
 
-Free flight price comparison: live fares, 30-day price history, deal detection, accounts, and price-drop email alerts.
-No affiliate links; booking buttons go straight to the booking site.
+Plan trips offline, then find the cheapest flights. One app, one account.
 
-Stack: Next.js (App Router) + Tailwind + Recharts, Neon Postgres, Upstash Redis, Bright Data (Google Flights), Resend, Vercel.
+- **Flights** (`/`): live fares, 30-day price history, deal detection, price-drop email alerts. Free, no affiliate links.
+- **Trips** (`/trips`): offline-first itineraries, packing, expenses, notes, a map and nearby ideas. Trips live in IndexedDB on the device and sync to the account when signed in.
+
+This repo is the merge of `wayfare-app` (trips, a Vite SPA) and `flight-finder` (flights, Next.js). Flight Finder is the base; the Wayfare trips code lives in `src/wayfare/` and is mounted at `/trips` as client-only routes.
+
+Stack: Next.js (App Router) + Tailwind + Recharts + Redux Toolkit/idb-keyval/Leaflet (trips), Neon Postgres, Upstash Redis, Bright Data (Google Flights), Resend, Vercel.
 
 ## Setup
 
 1. Copy `.env.example` to `.env.local` and fill it in.
 2. `npm install`
-3. `npm run migrate` (creates the tables in Neon)
+3. `npm run migrate` (creates the tables in Neon, including `trip_sync`)
 4. `npm run dev`
 
 `npm test` runs the unit tests, `npm run typecheck` checks types.
@@ -21,7 +25,13 @@ Stack: Next.js (App Router) + Tailwind + Recharts, Neon Postgres, Upstash Redis,
 3. Run `npm run migrate` once against the production `DATABASE_URL`.
 4. In this GitHub repo add secrets `APP_URL` and `CRON_SECRET` so the scheduled workflow can refresh watched routes.
 
+## Moving existing Wayfare users over
+
+Only needed for the production cutover. After `npm run migrate`, run `node --env-file=.env.local scripts/import-wayfare.mjs`: it copies verified `wf_users` into `users` (an email that already has a Flight Finder account keeps that account) and `wf_sync` into `trip_sync`. The `wf_*` tables are left in place. **Rotate `JWT_SECRET` at cutover**: old Wayfare session cookies carry `wf_users` ids, which are different people in `users`.
+
 ## How it works
+
+- `/api/trips` is the trip sync endpoint: one JSON document per user, merged per trip on the client (`src/wayfare/merge.ts`) and written with an optimistic revision (409 means pull, merge, retry).
 
 - `/api/search` validates the query and returns cached results (Redis, 1 hour). On a miss it reads Google Flights
   directly with the vendored [fli-js](src/vendor/fli/NOTICE.md) client (1-3 seconds, no credits, capped by

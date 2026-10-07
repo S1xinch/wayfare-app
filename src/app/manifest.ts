@@ -3,9 +3,9 @@ import { BRAND } from "@/lib/pwa";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Flight Finder",
-    short_name: "Flights",
-    description: "Compare flight prices, spot deals and get price-drop alerts.",
+    name: "Wayfare",
+    short_name: "Wayfare",
+    description: "Plan trips offline, find flights, get price-drop alerts.",
     start_url: "/",
     scope: "/",
     display: "standalone",
@@ -14,9 +14,9 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: BRAND,
     categories: ["travel"],
     icons: [
-      { src: "/pwa/icon/192", sizes: "192x192", type: "image/png", purpose: "any" },
-      { src: "/pwa/icon/512", sizes: "512x512", type: "image/png", purpose: "any" },
-      { src: "/pwa/icon/512m", sizes: "512x512", type: "image/png", purpose: "maskable" },
+      { src: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
+      { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
     ],
   };
 }

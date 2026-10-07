@@ -2,6 +2,7 @@
 //  - static assets (cache-first)
 //  - flight search results the user has already seen (/api/search 200s), so they can be re-opened offline
 //  - the results / privacy / terms pages and an /offline fallback
+//  - the /trips shell: every /trips/* navigation shares one cached copy (the page is a client-rendered shell; trip data lives in IndexedDB)
 // Never cached: accounts, alerts, bookings, anything under /api/ other than search results, or personalised pages.
 const V = "ff-v1";
 const STATIC = `${V}-static`;
@@ -62,6 +63,12 @@ self.addEventListener("fetch", (e) => {
     e.respondWith(
       caches.open(STATIC).then(async (c) => (await c.match(req)) ?? fetch(req).then((res) => (res.ok && c.put(req, res.clone()), res))),
     );
+    return;
+  }
+
+  if (req.mode === "navigate" && url.pathname.startsWith("/trips")) {
+    // Cached under one key so any trip URL opens offline; the shell holds no personal data beyond the Sign in / Dashboard link.
+    e.respondWith(networkFirst(req, PAGES, "/trips").catch(async () => (await caches.match("/trips")) ?? (await caches.match("/offline")) ?? Response.error()));
     return;
   }
 

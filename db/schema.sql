@@ -78,3 +78,12 @@ CREATE TABLE IF NOT EXISTS price_alerts (
   last_notified_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- Wayfare trip sync: one document per user; rev is the optimistic-concurrency counter.
+-- (Named trip_sync, not wf_sync: production already has a wf_sync that points at wf_users.)
+CREATE TABLE IF NOT EXISTS trip_sync (
+  user_id INT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+  rev INT NOT NULL DEFAULT 1,
+  doc JSONB NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);

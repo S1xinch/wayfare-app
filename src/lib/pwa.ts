@@ -23,4 +23,16 @@ export const SPLASH: [number, number, number][] = [
 export const splashMedia = ([w, h, r]: [number, number, number]) =>
   `(device-width: ${w / r}px) and (device-height: ${h / r}px) and (-webkit-device-pixel-ratio: ${r}) and (orientation: portrait)`;
 
-export const ICON_SIZES = [180, 192, 512];
+/** Sizes with a hand-made Wayfare launch image in public/splash (light and -dark). Others fall back to the generated /pwa/splash. */
+const STATIC_SPLASH = new Set(["1320x2868", "1206x2622", "1290x2796", "1179x2556", "1284x2778", "1170x2532", "1125x2436", "1242x2688", "828x1792", "750x1334"]);
+
+export const startupImages = () =>
+  SPLASH.flatMap((s) => {
+    const k = `${s[0]}x${s[1]}`;
+    return STATIC_SPLASH.has(k)
+      ? [
+          { url: `/splash/${k}.png`, media: `${splashMedia(s)} and (prefers-color-scheme: light)` },
+          { url: `/splash/${k}-dark.png`, media: `${splashMedia(s)} and (prefers-color-scheme: dark)` },
+        ]
+      : [{ url: `/pwa/splash/${k}`, media: splashMedia(s) }];
+  });
