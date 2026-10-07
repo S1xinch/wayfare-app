@@ -2,7 +2,7 @@
 
 Offline-first trip planner. Itinerary, packing list, expenses, notes, map, and budget-based ideas. Everything is stored on your device.
 
-Live: https://s1xinch.github.io/wayfare-app/
+Live: https://wayfare-app-phi.vercel.app
 
 ```bash
 npm install
@@ -12,4 +12,4 @@ npm run icons    # regenerate app icons and iOS splash screens
 node scripts/suggest-check.ts   # budget and suggestion logic checks
 ```
 
-Deploys to GitHub Pages on push to `main` (Settings → Pages → Source: GitHub Actions).
+Hosted on Vercel (static app + `api/` functions). Accounts need `DATABASE_URL`, `JWT_SECRET`, `APP_URL`, `RESEND_API_KEY` and `MAIL_FROM`; apply the schema with `npm run migrate`.
