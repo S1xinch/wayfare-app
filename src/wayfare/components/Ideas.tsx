@@ -19,7 +19,7 @@ export default function Ideas({ trip }: { trip: Trip }) {
   async function find() {
     ctl.current?.abort()
     const c = (ctl.current = new AbortController())
-    const timer = setTimeout(() => c.abort(), 25000)
+    const timer = setTimeout(() => c.abort(), 50000) // first lookup of an area can take 20-30 s (public Overpass is slow); repeats are cached
     setBusy(true); setErr('')
     try { setIdeas(rank(await fetchElements(trip.destination, c.signal), daily)) }
     catch (e) { setErr(!navigator.onLine ? 'You are offline. Connect to find ideas.' : c.signal.aborted ? 'That took too long. Try again.' : (e as Error).message) }
