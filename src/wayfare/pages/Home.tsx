@@ -6,7 +6,7 @@ import { addTrip, newTrip, uid, useAppDispatch, useAppSelector } from '../store'
 import type { Trip } from '../types'
 import Modal from '../components/Modal'
 
-const COLORS = ['#dbeafe', '#dcfce7', '#fef3c7', '#fee2e2', '#e9d5ff']
+const COLORS = ['#c8d8e4', '#d3e8e2', '#dde7ee', '#e3f1ed', '#cfdfe8']
 const DATE = /^\d{4}-\d\d-\d\d$/
 export const fmt = (n: number, cur = 'USD') => { try { return n.toLocaleString(undefined, { style: 'currency', currency: cur }) } catch { return n.toFixed(2) } }
 
@@ -79,14 +79,14 @@ export default function Home() {
             <li key={t.id}>
               <Link href={`/trips/${t.id}`} className="card flex h-[280px] flex-col gap-3 overflow-hidden !p-0 hover:border-neutral-400">
                 <div className="flex h-20 items-center gap-3 px-5" style={{ background: COLORS[i % 5] }}>
-                  <span aria-hidden className="grid size-9 place-items-center rounded-full bg-white/70 text-lg font-bold text-[#1a202c]">{(t.destination || t.name)[0]?.toUpperCase()}</span>
+                  <span aria-hidden className="grid size-9 place-items-center rounded-full bg-white/70 text-lg font-bold text-[#17323b]">{(t.destination || t.name)[0]?.toUpperCase()}</span>
                 </div>
                 <div className="flex flex-1 flex-col gap-2 px-5 pb-5">
                   <h3>{t.name}</h3>
                   <p>{t.destination}</p>
                   <p className="caption mono">{t.startDate} → {t.endDate}</p>
                   <p className="caption">Budget {fmt(t.budget, cur)} · {t.itinerary.reduce((n, d) => n + d.activities.length, 0)} activities</p>
-                  <span className="mt-auto font-semibold text-primary-600 dark:text-blue-400">View trip</span>
+                  <span className="mt-auto font-semibold text-primary-600 dark:text-[#52ab98]">View trip</span>
                 </div>
               </Link>
             </li>

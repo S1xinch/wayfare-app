@@ -13,7 +13,7 @@ export default function PriceChart({ data }: { data: { ts: number; price: number
           <XAxis dataKey="ts" type="number" scale="time" domain={["dataMin", "dataMax"]} tickFormatter={day} />
           <YAxis domain={["auto", "auto"]} tickFormatter={(v) => `$${v}`} width={56} />
           <Tooltip labelFormatter={(t) => new Date(Number(t)).toLocaleString()} formatter={(v) => [`$${v}`, "Cheapest fare"]} />
-          <Line dataKey="price" stroke="#0066CC" strokeWidth={2} dot={{ r: 3 }} isAnimationActive={false} />
+          <Line dataKey="price" stroke="#2b6777" strokeWidth={2} dot={{ r: 3 }} isAnimationActive={false} />
         </LineChart>
       </ResponsiveContainer>
     </div>

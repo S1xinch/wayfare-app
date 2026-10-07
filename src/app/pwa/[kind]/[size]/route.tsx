@@ -8,7 +8,7 @@ export const dynamic = "force-static";
 const Logo = ({ px }: { px: number }) => (
   <svg width={px} height={px} viewBox="0 0 96 96">
     <path d="M14 30 32 68 48 40 64 68 82 30" fill="none" stroke="#fff" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" />
-    <circle cx="82" cy="30" r="8" fill="#f59e0b" />
+    <circle cx="82" cy="30" r="8" fill="#52ab98" />
   </svg>
 );
 

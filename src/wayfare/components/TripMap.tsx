@@ -12,10 +12,10 @@ export default function TripMap({ trip }: { trip: Trip }) {
     pts.forEach((a) => {
       const pop = document.createElement('span')
       pop.textContent = `${a.time} ${a.title}` // textContent: user text never parsed as HTML
-      L.circleMarker([a.lat!, a.lng!], { radius: 8, color: '#0066cc', fillOpacity: 0.8 }).bindPopup(pop).addTo(map)
+      L.circleMarker([a.lat!, a.lng!], { radius: 8, color: '#2b6777', fillOpacity: 0.8 }).bindPopup(pop).addTo(map)
     })
     if (pts.length > 1) map.fitBounds(L.latLngBounds(pts.map((a) => [a.lat!, a.lng!] as [number, number])), { padding: [30, 30] })
     return () => { map.remove() }
   }, [trip.itinerary])
-  return <div ref={el} role="region" aria-label="Activity map" className="h-[400px] rounded-lg border border-neutral-200 dark:border-[#2d333f]" />
+  return <div ref={el} role="region" aria-label="Activity map" className="h-[400px] rounded-lg border border-neutral-200 dark:border-[#2b4852]" />
 }

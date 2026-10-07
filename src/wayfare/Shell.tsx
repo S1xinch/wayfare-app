@@ -4,11 +4,10 @@ import { Provider } from 'react-redux'
 import { CURRENCIES, currencyName } from '@/lib/currencies'
 import { useCurrency } from '@/lib/money'
 import { initAccount } from './account'
-import { initStore, store } from './store'
+import { loadTrips } from './boot'
+import { store } from './store'
 import 'leaflet/dist/leaflet.css'
 import './wayfare.css'
-
-let loaded: Promise<void> | undefined // the store is a module singleton: load IndexedDB once per page load, not per visit to /trips
 
 const toggleDark = () => {
   const dark = document.querySelector('.wf')!.classList.toggle('dark')
@@ -22,7 +21,7 @@ export default function Shell({ children }: { children: ReactNode }) {
   const { cur, setCurrency } = useCurrency()
   useEffect(() => {
     try { setDark(localStorage.dark === '1') } catch { /* private mode */ } // opt-in: only this area themes dark, so don't follow the OS
-    ;(loaded ??= initStore()).then(() => { setReady(true); initAccount() })
+    loadTrips().then(() => { setReady(true); initAccount() })
   }, [])
   return (
     <Provider store={store}>

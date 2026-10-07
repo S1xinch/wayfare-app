@@ -11,7 +11,7 @@ import Modal from '../components/Modal'
 import Ideas from '../components/Ideas'
 import { fmt } from './Home'
 
-const TripMap = dynamic(() => import('../components/TripMap'), { ssr: false, loading: () => <div className="h-[400px] animate-pulse rounded-lg bg-neutral-200 dark:bg-[#2d333f]" /> }) // leaflet touches window at import
+const TripMap = dynamic(() => import('../components/TripMap'), { ssr: false, loading: () => <div className="h-[400px] animate-pulse rounded-lg bg-neutral-200 dark:bg-[#2b4852]" /> }) // leaflet touches window at import
 const TABS = ['Itinerary', 'Packing', 'Expenses', 'Notes', 'Ideas', 'Map'] as const
 const form = (e: React.FormEvent<HTMLFormElement>) => { e.preventDefault(); const f = e.currentTarget; return { v: Object.fromEntries(new FormData(f)) as Record<string, string>, reset: () => f.reset() } }
 const coord = (s: string, max: number) => { const n = parseFloat(s); return s !== '' && Math.abs(n) <= max ? n : undefined }
@@ -65,10 +65,10 @@ export default function TripDetail() {
         </div>
       </div>
 
-      <div role="tablist" aria-label="Trip sections" className="mb-6 flex gap-1 overflow-x-auto border-b border-neutral-200 print:hidden dark:border-[#2d333f]">
+      <div role="tablist" aria-label="Trip sections" className="mb-6 flex gap-1 overflow-x-auto border-b border-neutral-200 print:hidden dark:border-[#2b4852]">
         {TABS.map((t) => (
           <button key={t} role="tab" aria-selected={tab === t} onClick={() => setTab(t)}
-            className={`min-h-11 px-4 font-semibold ${tab === t ? 'border-b-2 border-primary-600 text-primary-600 dark:text-blue-400' : ''}`}>{t}</button>
+            className={`min-h-11 px-4 font-semibold ${tab === t ? 'border-b-2 border-primary-600 text-primary-600 dark:text-[#52ab98]' : ''}`}>{t}</button>
         ))}
       </div>
 
@@ -120,7 +120,7 @@ export default function TripDetail() {
                 {trip.packingList.filter((p) => p.category === c).map((p) => (
                   <li key={p.id} className="flex items-center justify-between">
                     <label className={`flex min-h-11 flex-1 items-center gap-2 ${p.packed ? 'line-through opacity-60' : ''}`}>
-                      <input type="checkbox" className="size-4 accent-[#0066cc]" checked={p.packed}
+                      <input type="checkbox" className="size-4 accent-[#2b6777]" checked={p.packed}
                         onChange={() => patch({ packingList: trip.packingList.map((x) => x.id === p.id ? { ...x, packed: !x.packed } : x) })} />
                       {p.item} <span className="caption">×{p.quantity}</span>
                     </label>

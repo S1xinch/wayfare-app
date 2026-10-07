@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { CURRENCIES, currencyName } from "@/lib/currencies";
 import { sameFlight } from "@/lib/flightstatus";
 import { money, useCurrency } from "@/lib/money";
+import AddToTrip from "@/wayfare/AddToTrip";
 import Sheet from "./Sheet";
 import type { DealInfo, Pt } from "@/lib/deals";
 import { hourOf, type Flight } from "@/lib/normalize";
@@ -400,6 +401,7 @@ function FareRow({ f, open, onToggle, book, saved, onSave }: { f: Flight; open: 
         <td className="font-bold">{money(f.price, f.currency)}</td>
         <td className="whitespace-nowrap">
           <span className="mr-2"><SaveButton saved={saved} onSave={onSave} /></span>
+          <span className="mr-2"><AddToTrip flight={f} /></span>
           <button type="button" className="btn btn-plain mr-2" aria-expanded={open} onClick={onToggle}>{open ? "Hide" : "Details"}</button>
           <a className="btn" href={f.bookingUrl || book.url} target="_blank" rel="noopener noreferrer">
             View on {f.bookingUrl ? f.bookingProvider || "airline site" : book.name}
@@ -451,7 +453,8 @@ function FareCard({ f, open, onToggle, book, saved, onSave }: { f: Flight; open:
       </p>
       <div className="grid grid-cols-2 gap-2">
         <SaveButton saved={saved} onSave={onSave} />
-        <button type="button" className="btn btn-plain" aria-expanded={open} onClick={onToggle}>{open ? "Hide details" : "Details"}</button>
+        <AddToTrip flight={f} />
+        <button type="button" className="btn btn-plain col-span-2" aria-expanded={open} onClick={onToggle}>{open ? "Hide details" : "Details"}</button>
         <a className="btn col-span-2 text-center" href={f.bookingUrl || book.url} target="_blank" rel="noopener noreferrer">
           View on {f.bookingUrl ? f.bookingProvider || "airline site" : book.name}
         </a>

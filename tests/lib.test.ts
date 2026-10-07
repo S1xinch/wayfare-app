@@ -97,6 +97,12 @@ test("flight status: code parsing, picking the travel day, normalising", () => {
   assert.equal(flightCode("DL 742"), "DL742");
   assert.equal(flightCode("dl742, DL 99"), "DL742"); // first leg of a connection
   assert.equal(flightCode("not a flight"), null);
+  assert.equal(flightCode("BA117"), "BA117"); // no space
+  assert.equal(flightCode("  ba   117 "), "BA117"); // extra spaces
+  assert.equal(flightCode("BA-117"), "BA117");
+  assert.equal(flightCode("ba0117"), "BA117"); // leading zeros
+  assert.equal(flightCode("U2 1234"), "U21234"); // airline code with a digit
+  assert.equal(flightCode("BA"), null);
   const rows = [
     { flight_date: "2026-10-06", flight_status: "landed", departure: { iata: "JFK" }, arrival: { iata: "LAX" }, flight: { iata: "DL742" } },
     {
@@ -158,6 +164,9 @@ test("fromFli maps one-way and round-trip rows from the direct search", () => {
 test("sameFlight matches flight numbers ignoring spaces and case", () => {
   assert.equal(sameFlight("BA 117", "ba117"), true);
   assert.equal(sameFlight("BA 117", "BA 117"), true);
+  assert.equal(sameFlight("BA 117", "BA-117"), true);
+  assert.equal(sameFlight("BA 117", "BA0117"), true);
+  assert.equal(sameFlight("BA 0117", "ba117"), true);
   assert.equal(sameFlight("BA 1170", "BA 117"), true); // prefix of a longer number: still shown, the user can refine
   assert.equal(sameFlight("BA 117", "AA 117"), false);
   assert.equal(sameFlight("BA 117", "  "), false); // an empty query never matches (the filter treats it as "off")

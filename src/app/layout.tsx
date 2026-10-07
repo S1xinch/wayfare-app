@@ -41,7 +41,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <div id="splash" className="splash" aria-hidden="true">
           <svg className="splash-plane" viewBox="0 0 96 96" overflow="visible">
             <path className="route" d="M14 30 32 68 48 40 64 68 82 30" fill="none" stroke="#fff" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" />
-            <circle className="dot" cx="82" cy="30" r="8" fill="#f59e0b" />
+            <circle className="dot" cx="82" cy="30" r="8" fill="#52ab98" />
           </svg>
           <div className="splash-title">Wayfare</div>
         </div>

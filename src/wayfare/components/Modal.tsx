@@ -10,7 +10,7 @@ export default function Modal({ open, onClose, title, children }: { open: boolea
   }, [open])
   return (
     <dialog ref={ref} onClose={onClose} aria-label={title}
-      className="m-auto w-[calc(100%-32px)] max-w-[500px] rounded-xl bg-white p-8 text-inherit backdrop:bg-black/50 dark:bg-[#1a1f2e]">
+      className="m-auto w-[calc(100%-32px)] max-w-[500px] rounded-xl bg-white p-8 text-inherit backdrop:bg-black/50 dark:bg-[#17303a]">
       <div className="mb-4 flex items-start justify-between">
         <h2>{title}</h2>
         <button type="button" aria-label="Close" className="min-h-11 min-w-11 text-xl" onClick={onClose}>✕</button>

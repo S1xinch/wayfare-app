@@ -1,4 +1,4 @@
-export const BRAND = "#0066cc";
+export const BRAND = "#2b6777";
 
 /** iOS launch-image sizes: [pixel width, pixel height, device pixel ratio], portrait. iOS matches them by exact device size. */
 export const SPLASH: [number, number, number][] = [

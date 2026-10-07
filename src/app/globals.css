@@ -2,14 +2,15 @@
 @custom-variant dark (&:where(.dark, .dark *)); /* Wayfare trips area only: it toggles .dark on its own wrapper */
 
 @theme {
-  --color-brand: #0066cc;
+  --color-brand: #2b6777;
   --color-ink: #111111;
-  --color-paper: #eeeeee;
-  --color-deal: #28a745;
+  --color-paper: #f2f2f2;
+  --color-deal: #52ab98;
+  --color-mist: #c8d8e4;
   --color-high: #dc3545;
   /* Wayfare trips area */
-  --color-primary-600: #0066cc;
-  --color-success: #10b981;
+  --color-primary-600: #2b6777;
+  --color-success: #2f7d6b; /* text-safe shade of the accent */
   --color-danger: #ef4444;
 }
 
@@ -42,7 +43,7 @@ footer a {
 }
 
 .wrap { max-width: 1200px; margin: 0 auto; padding: 16px; }
-.card { background: #fff; border: 1px solid #ccc; border-radius: 4px; padding: 16px; }
+.card { background: #fff; border: 1px solid var(--color-mist); border-radius: 4px; padding: 16px; }
 
 .btn {
   display: inline-block;
@@ -75,7 +76,7 @@ label { display: block; font-weight: 600; margin-bottom: 4px; }
 .badge { display: inline-block; border-radius: 4px; padding: 2px 8px; font-size: 0.875rem; font-weight: 700; }
 .badge-deal { background: var(--color-deal); color: #111; }
 .badge-high { background: var(--color-high); color: #fff; }
-th, td { text-align: left; padding: 8px; border-bottom: 1px solid #ddd; vertical-align: top; }
+th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--color-mist); vertical-align: top; }
 th { font-weight: 700; }
 
 /* Scroll containers must clip absolutely positioned children (e.g. .sr-only labels in table headers),
@@ -214,5 +215,5 @@ html[data-splash-force]:not([data-splash="done"]) .splash { display: flex; }
 }
 @media (prefers-contrast: more) {
   .card { border-color: #000; }
-  .chrome { background: #004a99; }
+  .chrome { background: #1f4a57; }
 }

@@ -18,15 +18,15 @@ export type FlightStatus = {
   arr: Side;
 };
 
-/** "DL 742" or "dl742" -> "DL742"; null if it is not an airline code plus number. Takes the first leg of "DL 742, DL 99". */
+/** "DL 742", "dl742", "DL-742" or "DL0742" -> "DL742"; null if it is not an airline code plus number. Takes the first leg of "DL 742, DL 99". */
 export function flightCode(s: string) {
-  const m = /^([A-Z0-9]{2})\s*(\d{1,4}[A-Z]?)$/i.exec(s.split(",")[0].trim());
-  return m ? `${m[1]}${m[2]}`.toUpperCase() : null;
+  const m = /^([A-Z0-9]{2})[\s.-]*(\d{1,4}[A-Z]?)$/i.exec(s.split(",")[0].trim());
+  return m ? `${m[1]}${m[2].replace(/^0+(?=\d)/, "")}`.toUpperCase() : null;
 }
 
-/** Does a flight number such as "BA 117" match what the user typed ("ba117", "117")? Spaces and case are ignored. */
+/** Does a flight number such as "BA 117" match what the user typed ("ba117", "BA-117", "BA0117", "117")? Spaces, dashes, case and leading zeros are ignored. */
 export function sameFlight(flightNumber: string, query: string) {
-  const norm = (s: string) => s.replace(/\s+/g, "").toUpperCase();
+  const norm = (s: string) => s.replace(/[\s.-]+/g, "").toUpperCase().replace(/^([A-Z][A-Z0-9]|[A-Z0-9][A-Z])0+(?=\d)/, "$1");
   const q = norm(query);
   return q.length > 0 && norm(flightNumber).includes(q);
 }
