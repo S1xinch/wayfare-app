@@ -9,6 +9,7 @@ export function Privacy() {
       <h1>Privacy Policy</h1>
       <p>Tripsy stores everything on your device, in your browser’s IndexedDB. Nothing is sent to a server, and there are no accounts, analytics or trackers.</p>
       <p>The map view loads tiles from OpenStreetMap when you are online; that request reveals your IP address and the area you view to OpenStreetMap, as with any map.</p>
+      <p>The Ideas tab, only when you press “Find ideas”, sends your trip’s destination text to OpenStreetMap’s Nominatim and Overpass services to look up the location and nearby sights. Nothing else about your trip is sent.</p>
       <p>Exports are files you save yourself. Clearing your browser’s site data deletes all trips, so export a backup first.</p>
     </article>
   )

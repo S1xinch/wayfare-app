@@ -3,10 +3,11 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { deleteTrip, uid, updateTrip, useAppDispatch, useAppSelector } from '../store'
 import type { Activity, Trip } from '../types'
 import Modal from '../components/Modal'
+import Ideas from '../components/Ideas'
 import { fmt } from './Home'
 
 const TripMap = lazy(() => import('../components/TripMap'))
-const TABS = ['Itinerary', 'Packing', 'Expenses', 'Notes', 'Map'] as const
+const TABS = ['Itinerary', 'Packing', 'Expenses', 'Notes', 'Ideas', 'Map'] as const
 const form = (e: React.FormEvent<HTMLFormElement>) => { e.preventDefault(); const f = e.currentTarget; return { v: Object.fromEntries(new FormData(f)) as Record<string, string>, reset: () => f.reset() } }
 const coord = (s: string, max: number) => { const n = parseFloat(s); return s !== '' && Math.abs(n) <= max ? n : undefined }
 
@@ -169,6 +170,8 @@ export default function TripDetail() {
           <textarea id="notes" className="input min-h-64" value={trip.notes} onChange={(e) => patch({ notes: e.target.value })} />
         </section>
       )}
+
+      {tab === 'Ideas' && <Ideas trip={trip} />}
 
       {tab === 'Map' && (
         <section>
