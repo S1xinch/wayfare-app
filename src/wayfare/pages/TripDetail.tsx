@@ -9,6 +9,7 @@ import { forgetTrip } from '../account'
 import type { Activity, Trip } from '../types'
 import Modal from '../components/Modal'
 import Ideas from '../components/Ideas'
+import OpenInMap from '../components/OpenInMap'
 import { fmt } from './Home'
 
 const TripMap = dynamic(() => import('../components/TripMap'), { ssr: false, loading: () => <div className="h-[400px] animate-pulse rounded-lg bg-neutral-200 dark:bg-[#2b4852]" /> }) // leaflet touches window at import
@@ -82,7 +83,10 @@ export default function TripDetail() {
                 {d.activities.map((a) => (
                   <li key={a.id} className="flex items-start justify-between gap-3">
                     <div><span className="mono mr-2">{a.time}</span><strong>{a.title}</strong>{a.location && <span> · {a.location}</span>}{a.description && <p className="caption">{a.description}</p>}</div>
-                    <button className="min-h-11 min-w-11 print:hidden" aria-label={`Delete ${a.title}`} onClick={() => delActivity(d.id, a.id)}>✕</button>
+                    <div className="flex shrink-0 items-center gap-1">
+                      <OpenInMap activity={a} destination={trip.destination} />
+                      <button className="min-h-11 min-w-11 print:hidden" aria-label={`Delete ${a.title}`} onClick={() => delActivity(d.id, a.id)}>✕</button>
+                    </div>
                   </li>
                 ))}
               </ul>

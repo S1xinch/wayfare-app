@@ -246,6 +246,39 @@ h2 { letter-spacing: -0.01em; }
   .topnav a { padding: 0 11px; }
 }
 
+/* "Open in map" menu on itinerary activities: dropdown on wide screens, bottom sheet on phones */
+.map-menu { position: relative; display: inline-block; }
+.map-btn {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px; border: 1px solid var(--ctl-line); border-radius: 999px;
+  background: var(--surface); color: var(--link); font: inherit; font-size: 0.8125rem; font-weight: 600; cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+.map-btn:hover, .map-btn[aria-expanded="true"] { background: var(--surface-2); border-color: var(--link); }
+.map-pop {
+  position: absolute; right: 0; top: calc(100% + 6px); z-index: 40; min-width: 230px; padding: 6px;
+  background: var(--surface); color: var(--color-ink); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow-2);
+}
+.map-title { display: none; margin: 0; padding: 8px 12px 6px; font-size: 0.8125rem; font-weight: 700; color: var(--muted); }
+.map-pop hr { margin: 4px 6px; border: 0; border-top: 1px solid var(--line); }
+.map-pop .map-item {
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 44px; padding: 0 12px; border: 0; border-radius: 8px;
+  background: transparent; color: var(--color-ink); font: inherit; font-weight: 500; text-align: left; text-decoration: none; cursor: pointer;
+}
+main a.map-item:not(.btn):not(.card), main a.map-item:not(.btn):not(.card):hover { color: var(--color-ink); text-decoration: none; }
+.map-pop .map-item:hover { background: var(--surface-2); }
+.map-pop .map-item svg { flex: none; color: var(--link); }
+.map-last { margin-left: auto; font-size: 0.75rem; color: var(--muted); }
+.map-scrim { display: none; }
+@media (max-width: 640px) {
+  .map-scrim { display: block; position: fixed; inset: 0; z-index: 39; background: rgb(0 0 0 / 0.45); }
+  .map-pop {
+    position: fixed; left: 0; right: 0; bottom: 0; top: auto; z-index: 40; min-width: 0; max-height: 80dvh; overflow: auto;
+    padding: 8px 8px calc(8px + env(safe-area-inset-bottom)); border-width: 1px 0 0; border-radius: 20px 20px 0 0;
+  }
+  .map-title { display: block; }
+  .map-pop .map-item { min-height: 52px; font-size: 1.0625rem; }
+}
+
 /* Theme menu (header) */
 .theme-menu { position: relative; }
 .theme-btn {

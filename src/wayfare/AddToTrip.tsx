@@ -16,8 +16,13 @@ const to24 = (s: string) => {
   return `${String(h).padStart(2, '0')}:${m[2]}`
 }
 
-/** One itinerary activity per flight segment, each filed under its leg's date. */
-const activitiesFor = (f: Flight) =>
+/** IATA code -> airport name ("CBR" -> "Canberra Airport"), loaded on first use: the list is a 220 KB chunk. */
+let airports: Promise<Map<string, string>> | undefined
+const airportNames = () =>
+  (airports ??= import('@/data/airports.json').then((m) => new Map((m.default as unknown as string[][]).map((r) => [r[0], r[1]] as [string, string]))))
+
+/** One itinerary activity per flight segment, each filed under its leg's date. The airport's name lets any map app find it. */
+const activitiesFor = (f: Flight, names?: Map<string, string>) =>
   f.legs.flatMap((l) =>
     l.segments.map((s) => ({
       date: l.date,
@@ -25,7 +30,7 @@ const activitiesFor = (f: Flight) =>
         id: uid(),
         time: to24(s.depart),
         title: `${s.flightNumber}: ${s.from} to ${s.to}`,
-        location: `${s.from} airport`,
+        location: names?.get(s.from) ?? `${s.from} airport`,
         description: [s.airline, s.aircraft, s.arrive && `arrives ${s.arrive}`].filter(Boolean).join(', '),
       } satisfies Activity,
     })),
@@ -50,12 +55,13 @@ function Picker({ flight }: { flight: Flight }) {
     await openTrips() // loads on-device trips (and syncs) when this page was reached without visiting /trips first
   }
 
-  function add() {
+  async function add() {
     if (!trip || !fallback) return
+    const named = activitiesFor(flight, await airportNames())
     let n = 0
     const itinerary = trip.itinerary.map((d) => {
       // legs dated inside the trip go on their own day; anything else goes on the chosen day
-      const mine = items.filter((i) => (trip.itinerary.some((x) => x.date === i.date) ? i.date === d.date : d.id === fallback.id))
+      const mine = named.filter((i) => (trip.itinerary.some((x) => x.date === i.date) ? i.date === d.date : d.id === fallback.id))
       const fresh = mine.filter((i) => !d.activities.some((a) => a.title === i.act.title)) // clicking twice must not duplicate
       n += fresh.length
       return fresh.length ? { ...d, activities: [...d.activities, ...fresh.map((i) => i.act)] } : d
