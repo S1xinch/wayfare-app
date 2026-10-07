@@ -52,7 +52,12 @@ export async function fetchElements(destination: string, signal: AbortSignal): P
   if (!Number.isFinite(lat) || !Number.isFinite(lon)) throw new Error(`Couldn't find “${destination}” on the map`)
   const a = `(around:6000,${lat},${lon})`
   const q = `[out:json][timeout:20];(nwr["tourism"~"^(attraction|museum|gallery|viewpoint|zoo|theme_park|artwork)$"]${a};nwr["historic"~"^(monument|castle|ruins|memorial|archaeological_site)$"]${a};nwr["leisure"="park"]["name"]${a};);out center 120;`
-  const r = await fetch('https://overpass-api.de/api/interpreter', { method: 'POST', body: 'data=' + encodeURIComponent(q), headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, signal })
-  if (!r.ok) throw new Error('Sights lookup failed, try again in a minute')
-  return (await r.json()).elements ?? []
+  // public Overpass servers shed load often; try the mirror before giving up
+  for (const host of ['overpass-api.de', 'overpass.kumi.systems']) {
+    try {
+      const r = await fetch(`https://${host}/api/interpreter`, { method: 'POST', body: 'data=' + encodeURIComponent(q), headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, signal })
+      if (r.ok) return (await r.json()).elements ?? []
+    } catch (e) { if (signal.aborted) throw e }
+  }
+  throw new Error('Sights lookup is busy right now, try again in a minute')
 }
