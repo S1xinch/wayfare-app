@@ -162,6 +162,14 @@ label { display: block; font-weight: 600; font-size: 0.9375rem; margin-bottom: 6
 .input:hover { border-color: var(--link); }
 .input:focus { outline: none; border-color: var(--link); box-shadow: 0 0 0 4px var(--ring); }
 .input::placeholder { color: #66808a; }
+/* iOS Safari gives date/time inputs an intrinsic width and height that ignore the layout, so a time field overflowed its grid
+   cell and overlapped its neighbour. Let inputs and grid children shrink, and give those inputs a normal box. */
+.input { min-width: 0; max-width: 100%; }
+form.grid > *, form .grid > * { min-width: 0; }
+input.input[type="time"], input.input[type="date"], input.input[type="datetime-local"] {
+  -webkit-appearance: none; appearance: none; display: block; height: 44px; line-height: 1.2;
+}
+input.input[type="time"]::-webkit-date-and-time-value, input.input[type="date"]::-webkit-date-and-time-value { text-align: left; min-height: 1.2em; }
 select.input {
   appearance: none;
   padding-right: 38px;
