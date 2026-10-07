@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import { useCurrency } from '@/lib/money'
 import { useRef, useState } from 'react'
 import { addTrip, newTrip, uid, useAppDispatch, useAppSelector } from '../store'
 import type { Trip } from '../types'
@@ -16,6 +17,7 @@ function Field({ label, ...p }: { label: string } & React.InputHTMLAttributes<HT
 export default function Home() {
   const trips = useAppSelector((s) => s.trips)
   const dispatch = useAppDispatch()
+  const { cur } = useCurrency()
   const [q, setQ] = useState('')
   const [open, setOpen] = useState(false)
   const [err, setErr] = useState('')
@@ -83,7 +85,7 @@ export default function Home() {
                   <h3>{t.name}</h3>
                   <p>{t.destination}</p>
                   <p className="caption mono">{t.startDate} → {t.endDate}</p>
-                  <p className="caption">Budget {fmt(t.budget)} · {t.itinerary.reduce((n, d) => n + d.activities.length, 0)} activities</p>
+                  <p className="caption">Budget {fmt(t.budget, cur)} · {t.itinerary.reduce((n, d) => n + d.activities.length, 0)} activities</p>
                   <span className="mt-auto font-semibold text-primary-600 dark:text-blue-400">View trip</span>
                 </div>
               </Link>

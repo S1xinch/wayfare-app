@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { useCurrency } from '@/lib/money'
 import { uid, updateTrip, useAppDispatch } from '../store'
 import type { Trip } from '../types'
 import { dailyBudget, fetchElements, rank, type Idea } from '../suggest'
@@ -6,6 +7,7 @@ import { fmt } from '../pages/Home'
 
 export default function Ideas({ trip }: { trip: Trip }) {
   const dispatch = useAppDispatch()
+  const { cur } = useCurrency()
   const [ideas, setIdeas] = useState<Idea[] | null>(null)
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
@@ -34,7 +36,7 @@ export default function Ideas({ trip }: { trip: Trip }) {
   return (
     <section>
       <div className="card mb-5">
-        <p>Daily budget left: <strong className="mono">{fmt(daily)}</strong></p>
+        <p>Daily budget left: <strong className="mono">{fmt(daily, cur)}</strong></p>
         <p className="caption">Budget minus expenses so far, spread over the days left. Assumes expenses are in the same currency as the budget. Prices are rough USD estimates by category, not live prices.</p>
         <p className="caption mb-3">“Find ideas” sends “{trip.destination}” to OpenStreetMap services.</p>
         <button className="btn" onClick={find} disabled={busy || daily <= 0}>{busy ? 'Searching…' : 'Find ideas'}</button>

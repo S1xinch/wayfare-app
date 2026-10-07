@@ -1,6 +1,8 @@
 'use client'
 import { useEffect, useState, type ReactNode } from 'react'
 import { Provider } from 'react-redux'
+import { CURRENCIES, currencyName } from '@/lib/currencies'
+import { useCurrency } from '@/lib/money'
 import { initAccount } from './account'
 import { initStore, store } from './store'
 import 'leaflet/dist/leaflet.css'
@@ -17,6 +19,7 @@ const toggleDark = () => {
 export default function Shell({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false)
   const [dark, setDark] = useState(false)
+  const { cur, setCurrency } = useCurrency()
   useEffect(() => {
     try { setDark(localStorage.dark === '1') } catch { /* private mode */ } // opt-in: only this area themes dark, so don't follow the OS
     ;(loaded ??= initStore()).then(() => { setReady(true); initAccount() })
@@ -24,7 +27,12 @@ export default function Shell({ children }: { children: ReactNode }) {
   return (
     <Provider store={store}>
       <div className={`wf${dark ? ' dark' : ''}`}>
-        <div className="mb-2 flex justify-end">
+        <div className="mb-2 flex flex-wrap items-center justify-end gap-3">
+          <label className="label m-0 flex items-center gap-2">Currency
+            <select className="input" style={{ width: "auto" }} value={cur} onChange={(e) => setCurrency(e.target.value)}>
+              {CURRENCIES.map((c) => <option key={c} value={c}>{currencyName(c)}</option>)}
+            </select>
+          </label>
           <button className="btn btn-secondary" onClick={() => { toggleDark(); setDark((d) => !d) }} aria-label="Toggle dark mode">Theme</button>
         </div>
         {ready ? children : <p role="status">Loading your trips…</p>}

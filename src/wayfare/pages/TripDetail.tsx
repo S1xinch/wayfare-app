@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { useCurrency } from '@/lib/money'
 import { uid, updateTrip, useAppDispatch, useAppSelector } from '../store'
 import { forgetTrip } from '../account'
 import type { Activity, Trip } from '../types'
@@ -24,6 +25,7 @@ export default function TripDetail() {
   const trip = useAppSelector((s) => s.trips.find((t) => t.id === id))
   const dispatch = useAppDispatch()
   const router = useRouter()
+  const { cur } = useCurrency() // account/device currency preference: budgets are shown in it, new expenses default to it
   const [tab, setTab] = useState<(typeof TABS)[number]>('Itinerary')
   const [confirm, setConfirm] = useState(false)
   if (!trip) return <p>Trip not found. <Link href="/trips" className="underline">Back to trips</Link></p>
@@ -134,7 +136,7 @@ export default function TripDetail() {
       {tab === 'Expenses' && (
         <section>
           <div className="card mb-5">
-            <p>Budget <strong className="mono">{fmt(trip.budget)}</strong></p>
+            <p>Budget <strong className="mono">{fmt(trip.budget, cur)}</strong></p>
             {curs.length === 0 && <p>No expenses yet.</p>}
             {curs.map((c) => <p key={c}>Spent <strong className="mono">{fmt(totals[c], c)}</strong></p>)}
             {/* budget is currency-less, so only compare when every expense shares one currency */}
@@ -153,7 +155,7 @@ export default function TripDetail() {
             <Input label="Category" name="category" maxLength={40} placeholder="Food" />
             <div className="col-span-2"><Input label="Description" name="description" maxLength={100} /></div>
             <Input label="Amount" name="amount" type="number" step="0.01" min="0" required inputMode="decimal" />
-            <Input label="Currency" name="currency" maxLength={3} minLength={3} pattern="[A-Za-z]{3}" defaultValue="USD" />
+            <Input key={cur} label="Currency" name="currency" maxLength={3} minLength={3} pattern="[A-Za-z]{3}" defaultValue={cur} />
             <div className="col-span-2 sm:col-span-6"><button className="btn">Add expense</button></div>
           </form>
           <ul className="space-y-2">
