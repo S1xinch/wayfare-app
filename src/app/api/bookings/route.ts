@@ -10,13 +10,15 @@ export async function GET() {
     SELECT id, flight_data, confirmation_number, total_price::float8 AS total_price, booked_at
     FROM bookings WHERE user_id = ${uid} ORDER BY booked_at DESC`;
   return json(
-    rows.map((r) => ({
-      id: r.id,
-      ...JSON.parse(dec(r.flight_data)),
-      confirmation: dec(r.confirmation_number),
-      totalPrice: r.total_price,
-      bookedAt: r.booked_at,
-    })),
+    rows.flatMap((r) => {
+      try {
+        return [{ id: r.id, ...JSON.parse(dec(r.flight_data)), confirmation: dec(r.confirmation_number), totalPrice: r.total_price, bookedAt: r.booked_at }];
+      } catch (e) {
+        // e.g. the row was encrypted with a different ENCRYPTION_KEY: skip it so one bad record cannot break the whole list
+        console.error(`booking ${r.id} could not be decrypted`, e);
+        return [];
+      }
+    }),
   );
 }
 

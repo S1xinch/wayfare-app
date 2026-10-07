@@ -15,12 +15,14 @@ export async function GET(req: Request) {
   const alerts = await sql`
     SELECT r.origin, r.destination, r.depart_date, r.return_date, a.drop_pct, a.price_threshold, a.frequency, a.alert_status, a.created_at
     FROM price_alerts a JOIN routes r ON r.id = a.route_id WHERE a.user_id = ${uid}`;
-  const bookings = (await sql`SELECT flight_data, confirmation_number, total_price, booked_at FROM bookings WHERE user_id = ${uid}`).map((r) => ({
-    ...JSON.parse(dec(r.flight_data)),
-    confirmation: dec(r.confirmation_number),
-    total_price: r.total_price,
-    booked_at: r.booked_at,
-  }));
+  const bookings = (await sql`SELECT flight_data, confirmation_number, total_price, booked_at FROM bookings WHERE user_id = ${uid}`).flatMap((r) => {
+    try {
+      return [{ ...JSON.parse(dec(r.flight_data)), confirmation: dec(r.confirmation_number), total_price: r.total_price, booked_at: r.booked_at }];
+    } catch (e) {
+      console.error("booking could not be decrypted for export", e); // e.g. encrypted with a different ENCRYPTION_KEY
+      return [];
+    }
+  });
   const savedFlights = await sql`
     SELECT origin, destination, depart_date, return_date, passengers, cabin, flight, saved_price, currency, created_at
     FROM saved_flights WHERE user_id = ${uid}`;
