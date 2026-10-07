@@ -7,8 +7,8 @@ import App from './App'
 import './index.css'
 
 registerSW({ immediate: true })
-// hold the startup logo for at least 700ms so it reads as a splash instead of a flash
-Promise.all([initStore(), new Promise((r) => setTimeout(r, 700))]).then(() =>
+// hold the startup logo for at least 1.6s, so the full animation plays so it reads as a splash instead of a flash
+Promise.all([initStore(), new Promise((r) => setTimeout(r, 1600))]).then(() =>
   createRoot(document.getElementById('root')!).render(
     <Provider store={store}><HashRouter><App /></HashRouter></Provider>,
   ),
