@@ -89,7 +89,7 @@ export default function Home() {
           {shown.map((t, i) => (
             <li key={t.id}>
               <Link href={`/trips/${t.id}`} className="card flex h-[280px] flex-col gap-3 overflow-hidden !p-0 hover:border-neutral-400">
-                <div className="flex h-20 items-center gap-3 px-5" style={{ background: COLORS[i % 5] }}>
+                <div className="trip-cover flex h-20 items-center gap-3 px-5" style={{ background: COLORS[i % 5] }}>
                   <span aria-hidden className="grid size-9 place-items-center rounded-full bg-white/70 text-lg font-bold text-[#17323b]">{(t.destination || t.name)[0]?.toUpperCase()}</span>
                 </div>
                 <div className="flex flex-1 flex-col gap-2 px-5 pb-5">

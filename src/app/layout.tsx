@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import { BackButton, PwaInit, TabBar, TopNav } from "@/components/Pwa";
+import ThemeMenu from "@/components/ThemeMenu";
 import { userId } from "@/lib/auth";
 import { BRAND, startupImages } from "@/lib/pwa";
 import "./globals.css";
@@ -29,6 +30,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Theme: applied before first paint so there is no flash. "system" follows the device; the preference lives in localStorage
+            and, for signed-in users, on the account (synced by lib/theme.ts). */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var p=localStorage.getItem("wf_theme");if(p!=="light"&&p!=="dark")p="system";var d=p==="dark"||(p==="system"&&matchMedia("(prefers-color-scheme: dark)").matches),e=document.documentElement;e.dataset.theme=d?"dark":"light";e.dataset.themePref=p;e.style.colorScheme=d?"dark":"light"}catch(e){}`,
+          }}
+        />
         {/* Startup splash: once per launch of the installed app. Runs before first paint so the splash covers the page;
             add ?splash=1 to any URL to preview it in a browser. */}
         <script
@@ -59,10 +67,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                     <circle cx="82" cy="30" r="8" fill="#52ab98" stroke="#fff" strokeWidth="2.6" />
                   </g>
                 </svg>
-                Wayfare
+                <span className="brand-text">Wayfare</span>
               </Link>
             </div>
-            <TopNav signedIn={!!uid} />
+            <div className="flex items-center gap-1">
+              <TopNav signedIn={!!uid} />
+              <ThemeMenu />
+            </div>
           </div>
         </header>
         <main id="main">{children}</main>

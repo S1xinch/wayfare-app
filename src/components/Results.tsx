@@ -410,7 +410,7 @@ function FareRow({ f, open, onToggle, book, saved, onSave }: { f: Flight; open: 
       </tr>
       {open && (
         <tr>
-          <td colSpan={8} className="bg-[#f7f7f7]"><FareDetails f={f} /></td>
+          <td colSpan={8} className="bg-[var(--surface-2)]"><FareDetails f={f} /></td>
         </tr>
       )}
     </>
@@ -459,7 +459,7 @@ function FareCard({ f, open, onToggle, book, saved, onSave }: { f: Flight; open:
           View on {f.bookingUrl ? f.bookingProvider || "airline site" : book.name}
         </a>
       </div>
-      {open && <div className="rounded bg-[#f7f7f7] p-3"><FareDetails f={f} /></div>}
+      {open && <div className="rounded bg-[var(--surface-2)] p-3"><FareDetails f={f} /></div>}
     </li>
   );
 }

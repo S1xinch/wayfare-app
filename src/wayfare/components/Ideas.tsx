@@ -38,7 +38,7 @@ export default function Ideas({ trip }: { trip: Trip }) {
       <div className="card mb-5">
         <p>Daily budget left: <strong className="mono">{fmt(daily, cur)}</strong></p>
         <p className="caption">Budget minus expenses so far, spread over the days left. Assumes expenses are in the same currency as the budget. Prices are rough USD estimates by category, not live prices.</p>
-        <p className="caption mb-3">“Find ideas” sends “{trip.destination}” to OpenStreetMap services.</p>
+        <p className="caption mb-3">Places are ranked by how widely known they are (how many languages Wikipedia has an article in), then by price. “Find ideas” sends “{trip.destination}” to OpenStreetMap services; Wikidata is asked about public place IDs only.</p>
         <button className="btn" onClick={find} disabled={busy || daily <= 0}>{busy ? 'Searching…' : 'Find ideas'}</button>
         {daily <= 0 && <p className="mt-2 text-danger">No budget left to suggest from.</p>}
       </div>
@@ -56,6 +56,7 @@ export default function Ideas({ trip }: { trip: Trip }) {
               <li key={i.id} className={`card flex items-center justify-between gap-3 !py-3 ${added.includes(i.id) ? 'idea-flash' : ''}`}>
                 <div>
                   <strong>{i.name}</strong>
+                  {i.badge && <span className={`badge ml-2 align-middle ${i.badge === 'Must see' ? 'badge-must' : 'badge-deal'}`}>{i.badge}</span>}
                   <p className="caption">{i.kind} · {i.cost === 0 ? (i.known ? 'Free' : 'Likely free') : `~${fmt(i.cost, 'USD')}${i.known ? '' : ' (est.)'}`}</p>
                 </div>
                 <button className={`btn min-w-24 ${added.includes(i.id) ? 'btn-added' : 'btn-secondary'}`} disabled={!dayId || added.includes(i.id)} onClick={() => add(i)}

@@ -19,6 +19,46 @@ const HISTORIC = ["monument", "castle", "ruins", "memorial", "archaeological_sit
 const UA = `Wayfare/1.0 (${process.env.APP_URL ?? "https://wayfare-app-phi.vercel.app"})`;
 const round = (n: number) => Math.round(n * 100) / 100; // ~1 km: one cache entry per neighbourhood
 
+type El = { type: string; id: number; lat?: number; lon?: number; center?: { lat: number; lon: number }; tags?: Record<string, string> };
+const KEEP = ["name", "tourism", "historic", "leisure", "fee", "wikidata"]; // the only tags the Ideas tab uses: keeps the cached response small
+const NOT_AN_ARTICLE = new Set(["commonswiki", "metawiki", "specieswiki", "wikidatawiki", "mediawikiwiki"]);
+
+/**
+ * How many Wikipedia language editions have an article about each place (looked up by its Wikidata id): a free, keyless
+ * measure of how well known it is. Only public place ids are sent. If Wikidata is slow or down, places just have no score.
+ */
+async function fame(ids: string[]) {
+  const out = new Map<string, number>();
+  const batches: string[][] = [];
+  for (let i = 0; i < ids.length; i += 50) batches.push(ids.slice(i, i + 50));
+  await Promise.all(
+    batches.map(async (b) => {
+      try {
+        const r = await fetch(`https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=sitelinks&ids=${b.join("|")}`, {
+          headers: { "User-Agent": UA },
+          signal: AbortSignal.timeout(10_000),
+        });
+        if (!r.ok) return;
+        const entities = ((await r.json()).entities ?? {}) as Record<string, { sitelinks?: Record<string, unknown> }>;
+        for (const [id, e] of Object.entries(entities)) out.set(id, Object.keys(e.sitelinks ?? {}).filter((k) => k.endsWith("wiki") && !NOT_AN_ARTICLE.has(k)).length);
+      } catch {
+        /* fame is a bonus */
+      }
+    }),
+  );
+  return out;
+}
+
+async function withFame(els: El[]) {
+  const ids = [...new Set(els.map((e) => e.tags?.wikidata).filter((v): v is string => !!v && /^Q\d+$/.test(v)))];
+  const score = await fame(ids);
+  return els.map((e) => {
+    const tags: Record<string, string> = {};
+    for (const k of KEEP) if (e.tags?.[k]) tags[k] = e.tags[k];
+    return { type: e.type, id: e.id, lat: e.lat, lon: e.lon, center: e.center, tags, pop: score.get(e.tags?.wikidata ?? "") ?? 0 };
+  });
+}
+
 export async function GET(req: Request) {
   const rl = await limit(req, "sights", 20);
   if (rl) return rl;
@@ -28,7 +68,7 @@ export async function GET(req: Request) {
   const lat = round(Number(rawLat)), lon = round(Number(rawLon));
   if (!rawLat || !rawLon || !(Math.abs(lat) <= 90) || !(Math.abs(lon) <= 180)) return json({ error: "Bad coordinates." }, 400);
 
-  const key = `sights_${lat}_${lon}`;
+  const key = `sights2_${lat}_${lon}`; // v2: places carry a "pop" fame score
   const hit = await redis.get<unknown[]>(key).catch(() => null);
   if (hit) return json({ elements: hit });
 
@@ -38,7 +78,7 @@ export async function GET(req: Request) {
     ...TOURISM.map((t) => `nwr["tourism"="${t}"]${a};`),
     ...HISTORIC.map((t) => `nwr["historic"="${t}"]${a};`),
     `nwr["leisure"="park"]["name"]${a};`,
-  ].join("")});out center 120;`;
+  ].join("")});out center 300;`; // enough that a famous landmark is not cut off by an arbitrary limit before it can be ranked
 
   const stop = new AbortController();
   const ask = async (url: string) => {
@@ -49,11 +89,12 @@ export async function GET(req: Request) {
       signal: AbortSignal.any([stop.signal, AbortSignal.timeout(35_000)]),
     });
     if (!r.ok) throw new Error(`${url} ${r.status}`);
-    return ((await r.json()).elements ?? []) as unknown[];
+    return ((await r.json()).elements ?? []) as El[];
   };
   try {
-    const elements = await Promise.any(MIRRORS.map(ask));
+    const found = await Promise.any(MIRRORS.map(ask));
     stop.abort(); // the first answer wins; stop asking the others
+    const elements = await withFame(found);
     await redis.set(key, elements, { ex: 86400 }).catch(() => {});
     return json({ elements });
   } catch {

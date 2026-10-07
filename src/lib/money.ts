@@ -1,5 +1,6 @@
 import { useEffect, useSyncExternalStore } from "react";
 import { CURRENCIES } from "./currencies";
+import { me } from "./me";
 
 /**
  * One shared display-currency store for the whole app. Fares arrive in USD; money() converts for display.
@@ -58,15 +59,12 @@ function start() {
     if (saved && CURRENCIES.includes(saved)) local = saved;
   } catch {}
   apply(local);
-  fetch("/api/account")
-    .then(async (r) => {
-      if (!r.ok) return;
-      const j = await r.json();
-      signedIn = true;
-      if (j.currency && j.currency !== "USD") apply(j.currency);
-      else if (local !== "USD") save(local); // chosen on this device before signing in: keep it
-    })
-    .catch(() => {});
+  me().then((j) => {
+    if (!j) return;
+    signedIn = true;
+    if (j.currency && j.currency !== "USD") apply(j.currency);
+    else if (local !== "USD") save(local); // chosen on this device before signing in: keep it
+  });
 }
 
 export function setCurrency(c: string) {

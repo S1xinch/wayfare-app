@@ -6,6 +6,10 @@ import { useCallback, useEffect, useState } from "react";
 import { CURRENCIES, currencyName } from "@/lib/currencies";
 import { flightCode, type FlightStatus } from "@/lib/flightstatus";
 import { money, useCurrency } from "@/lib/money";
+import { useTheme } from "@/lib/theme";
+import { THEMES, type Theme } from "@/lib/theme-core";
+
+const THEME_LABEL: Record<Theme, string> = { system: "Match device", light: "Light", dark: "Dark" };
 
 type Alert = { id: number; origin: string; destination: string; dep: string; ret: string; passengers: number; cabin: string; drop_pct: number; threshold: number; frequency: string; status: string; current_price: number | null; updated: number | null };
 type Search = { o: string; d: string; dep: string; ret: string; pax: number; cabin: string };
@@ -33,7 +37,7 @@ function StatusPanel({ st }: { st?: StatusState }) {
   if (st.none || !st.data) return <p role="status" className="text-sm">No live data for this flight yet. Status is available on the day of travel.</p>;
   const d = st.data;
   return (
-    <div role="status" className="rounded bg-[#f7f7f7] p-3 text-sm">
+    <div role="status" className="rounded bg-[var(--surface-2)] p-3 text-sm">
       <p className="font-bold">
         {LABEL[d.status] ?? d.status}
         {d.delayMin > 0 ? `, ${d.delayMin} min late` : ""}
@@ -61,6 +65,7 @@ export default function Dashboard() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [saved, setSaved] = useState<Saved[]>([]);
   const { cur: currency, shown, error: fxError, setCurrency } = useCurrency(); // shared with results and homepage
+  const { pref: themePref, setTheme } = useTheme(); // site-wide; also in the header menu
   const [emailAlerts, setEmailAlerts] = useState(true);
   const [err, setErr] = useState("");
 
@@ -266,6 +271,17 @@ export default function Dashboard() {
             {shown !== "USD" && " Converted from USD at European Central Bank rates."}
           </p>
           {fxError && <p role="alert" className="err mt-1 text-sm">{fxError}</p>}
+        </div>
+        <div>
+          <label htmlFor="theme">Appearance</label>
+          <select id="theme" className="input" style={{ width: "auto", maxWidth: "100%" }} value={themePref} onChange={(e) => setTheme(e.target.value as Theme)}>
+            {THEMES.map((t) => (
+              <option key={t} value={t}>{THEME_LABEL[t]}</option>
+            ))}
+          </select>
+          <p className="mt-1 text-sm">
+            “Match device” follows your phone or computer&apos;s light and dark setting, switching automatically. Saved to your account, so it applies on every device you sign in on.
+          </p>
         </div>
         <p className="flex flex-wrap gap-3">
           <a className="btn btn-plain" href="/api/account?export=1">Download my data</a>

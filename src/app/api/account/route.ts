@@ -3,14 +3,15 @@ import { dec } from "@/lib/crypto";
 import { CURRENCIES } from "@/lib/currencies";
 import { sql } from "@/lib/db";
 import { json } from "@/lib/http";
+import { parseTheme } from "@/lib/theme-core";
 
 /** GDPR export: everything stored about the signed-in user. */
 export async function GET(req: Request) {
   const uid = await userId();
   if (!uid) return json({ error: "Sign in required" }, 401);
-  const [user] = await sql`SELECT email, email_verified, email_alerts, currency, created_at FROM users WHERE id = ${uid}`;
+  const [user] = await sql`SELECT email, email_verified, email_alerts, currency, theme, created_at FROM users WHERE id = ${uid}`;
   if (!user) return json({ error: "Not found" }, 404);
-  if (!new URL(req.url).searchParams.has("export")) return json({ email: user.email, emailAlerts: user.email_alerts, currency: user.currency });
+  if (!new URL(req.url).searchParams.has("export")) return json({ email: user.email, emailAlerts: user.email_alerts, currency: user.currency, theme: user.theme });
   const searches = await sql`SELECT origin, destination, departure_date, return_date, passengers, cabin, created_at FROM saved_searches WHERE user_id = ${uid}`;
   const alerts = await sql`
     SELECT r.origin, r.destination, r.depart_date, r.return_date, a.drop_pct, a.price_threshold, a.frequency, a.alert_status, a.created_at
@@ -39,7 +40,9 @@ export async function PATCH(req: Request) {
   const emailAlerts = typeof b.emailAlerts === "boolean" ? b.emailAlerts : null;
   const currency = typeof b.currency === "string" && CURRENCIES.includes(b.currency) ? b.currency : null;
   if (b.currency !== undefined && !currency) return json({ error: "Unknown currency." }, 400);
-  await sql`UPDATE users SET email_alerts = COALESCE(${emailAlerts}, email_alerts), currency = COALESCE(${currency}, currency), updated_at = now() WHERE id = ${uid}`;
+  const theme = parseTheme(b.theme);
+  if (b.theme !== undefined && !theme) return json({ error: "Unknown theme." }, 400);
+  await sql`UPDATE users SET email_alerts = COALESCE(${emailAlerts}, email_alerts), currency = COALESCE(${currency}, currency), theme = COALESCE(${theme}, theme), updated_at = now() WHERE id = ${uid}`;
   return json({ ok: true });
 }
 

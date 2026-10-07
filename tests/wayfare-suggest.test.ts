@@ -1,6 +1,6 @@
 // Run: npm test
 import assert from 'node:assert/strict'
-import { dailyBudget, estimate, rank } from '../src/wayfare/suggest.ts'
+import { badgeFor, dailyBudget, estimate, rank } from '../src/wayfare/suggest.ts'
 
 const spent = (amount: number) => [{ id: '', date: '', category: '', description: '', amount, currency: 'USD' }]
 const trip = { budget: 900, expenses: [], startDate: '2026-05-01', endDate: '2026-05-03' }
@@ -18,4 +18,17 @@ const ranked = rank([
   el(4, 'park', { leisure: 'park' }), el(5, undefined, { tourism: 'museum' }),
 ], 20)
 assert.deepEqual(ranked.map((i) => i.name), ['Park', 'Museum']) // zoo too pricey, dup + unnamed dropped, cheapest first
+// popularity: best known first, then cheapest; a duplicate name keeps its better-known copy; badges from the fame score
+const famous = rank([
+  { ...el(1, 'Quiet Park', { leisure: 'park' }), pop: 0 },
+  { ...el(2, 'Big Museum', { tourism: 'museum' }), pop: 40 },
+  { ...el(3, 'Old Tower', { historic: 'monument' }), pop: 90 },
+  { ...el(4, 'big museum', { tourism: 'museum' }), pop: 5 }, // duplicate name, less known: dropped
+  { ...el(5, 'Side Gallery', { tourism: 'gallery' }), pop: 15 },
+], 50)
+assert.deepEqual(famous.map((i) => i.name), ['Old Tower', 'Big Museum', 'Side Gallery', 'Quiet Park'])
+assert.deepEqual(famous.map((i) => i.badge), ['Must see', 'Popular', 'Popular', ''])
+assert.equal(badgeFor(59), 'Popular'); assert.equal(badgeFor(60), 'Must see'); assert.equal(badgeFor(14), '')
+// a dearer but famous place still ranks above a free obscure one, as long as it fits the budget
+assert.equal(rank([{ ...el(6, 'Zoo', { tourism: 'zoo' }), pop: 30 }, el(7, 'Pond', { leisure: 'park' })], 30)[0].name, 'Zoo')
 console.log('suggest checks passed')

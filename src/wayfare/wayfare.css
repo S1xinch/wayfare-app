@@ -1,6 +1,5 @@
-/* Wayfare trips area. Cards, buttons, inputs, tables and links come from globals.css so the whole site looks like one app.
-   This file only adds what is specific to trips, plus the opt-in dark theme, which re-points the shared colour tokens
-   inside .wf (the rest of the site stays light). */
+/* Wayfare trips area. Cards, buttons, inputs, tables and links come from globals.css so the whole site looks like one app,
+   and the light/dark theme is site-wide (html[data-theme]), so nothing theme-specific lives here. */
 .wf {
   max-width: 1216px; margin: 0 auto; min-height: 60vh;
   padding: 20px 16px max(32px, env(safe-area-inset-bottom));
@@ -11,13 +10,12 @@
 .wf .caption { font-size: 0.8125rem; font-weight: 500; color: var(--muted); }
 .wf .mono { font-family: ui-monospace, "SF Mono", Monaco, "Courier New", monospace; font-size: 0.8125rem; }
 
-/* Currency and theme controls above the page content */
+/* Currency control above the page content */
 .wf-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 12px; margin-bottom: 16px; }
 .wf-toolbar label { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 0.8125rem; color: var(--muted); }
 .wf-toolbar .input { width: auto; min-height: 36px; padding: 6px 34px 6px 10px; font-size: 0.875rem; }
-.wf-toolbar .btn { min-height: 36px; min-width: 36px; padding: 0 9px; }
 
-/* Ideas tab: "Add" confirmation */
+/* Ideas tab: "Add" confirmation and the Popular badge */
 .wf .btn-added { background: var(--color-deal); border-color: var(--color-deal); color: #0b2530; animation: added-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
 .wf .btn-added:disabled { opacity: 1; cursor: default; }
 .wf .btn-added .check { display: inline-block; animation: added-check 0.4s 0.1s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
@@ -27,25 +25,3 @@
 @keyframes added-check { from { transform: scale(0) rotate(-40deg); } to { transform: none; } }
 @keyframes idea-flash { 0% { background-color: rgb(82 171 152 / 0.25); } 100% { background-color: transparent; } }
 @media (prefers-reduced-motion: reduce) { .wf .btn-added, .wf .btn-added .check, .wf .idea-flash { animation: none; } }
-
-/* Dark theme (opt-in via the toggle in the toolbar) */
-.wf.dark {
-  color-scheme: dark;
-  --color-ink: #e8f0f4;
-  --muted: #9fb8c4;
-  --surface: #17303a;
-  --surface-2: #1d3d49;
-  --line: #2b4852;
-  --ctl-line: #5b7782;
-  --ring: rgb(82 171 152 / 0.4);
-  color: var(--color-ink);
-  background: #10222a;
-  border-radius: 20px;
-  margin-top: 12px;
-}
-.wf.dark :focus-visible { outline-color: var(--color-deal); }
-.wf.dark a:not(.btn):not(.card) { color: #7fd1bf; }
-.wf.dark a:not(.btn):not(.card):hover { color: #b6e8dc; }
-.wf.dark .btn-plain, .wf.dark .btn-secondary { color: var(--color-ink); }
-.wf.dark .btn-plain:hover, .wf.dark .btn-secondary:hover { color: #7fd1bf; border-color: var(--color-deal); }
-.wf.dark .input::placeholder { color: #7f99a4; }
