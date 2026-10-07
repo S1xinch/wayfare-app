@@ -13,13 +13,21 @@ function png(w, h, px) {
   return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk('IHDR', hd), chunk('IDAT', deflateSync(raw)), chunk('IEND', Buffer.alloc(0))])
 }
 const BLUE = [0, 102, 204], WHITE = [255, 255, 255], BG = [249, 250, 251], BG_DARK = [15, 20, 25]
-// blue disc with white ring + blue centre, scaled to a box of side s centred at (cx, cy)
-const mark = (cx, cy, s, bg) => (x, y) => {
-  const d = Math.hypot(x - cx, y - cy) / s
-  return d < 0.1 ? BLUE : d < 0.2 ? WHITE : d < 0.3 ? BLUE : bg
+// Map pin (circle + tapered tip) with a hole, fitted in a box of side s centred at (cx, cy).
+// Returns fg for pin body, bg for the hole and everywhere outside.
+const pin = (cx, cy, s, fg, bg) => {
+  const r = s * 0.2, D = 2.1 * r, ccy = cy - 0.55 * r // circle centre so the whole pin is vertically centred
+  const cosA = r / D, sinA = Math.sqrt(1 - cosA * cosA), yTan = ccy + r * cosA, tip = ccy + D
+  return (x, y) => {
+    const d = Math.hypot(x - cx, y - ccy)
+    if (d < r * 0.4) return bg
+    if (d < r) return fg
+    if (y >= yTan && y <= tip && Math.abs(x - cx) <= ((tip - y) / (tip - yTan)) * r * sinA) return fg
+    return bg
+  }
 }
 for (const [n, s] of [['apple-touch-icon', 180], ['icon-192', 192], ['icon-512', 512]])
-  writeFileSync(`public/${n}.png`, png(s, s, (x, y) => { const p = mark(s / 2, s * 0.45, s, BLUE)(x, y); return p === BLUE ? BLUE : WHITE }))
+  writeFileSync(`public/${n}.png`, png(s, s, pin(s / 2, s / 2, s * 1.1, WHITE, BLUE)))
 
 // [css width, css height, dpr] for current iPhones, portrait
 const devices = [[440, 956, 3], [402, 874, 3], [430, 932, 3], [393, 852, 3], [428, 926, 3], [390, 844, 3], [375, 812, 3], [414, 896, 3], [414, 896, 2], [375, 667, 2]]
@@ -31,7 +39,7 @@ for (const [cw, ch, r] of devices) {
     const f = `splash/${w}x${h}${suffix}.png`
     if (seen.has(f)) continue
     seen.add(f)
-    writeFileSync(`public/${f}`, png(w, h, mark(w / 2, h / 2, Math.min(w, h) * 0.5, bg)))
+    writeFileSync(`public/${f}`, png(w, h, pin(w / 2, h / 2, Math.min(w, h) * 0.5, BLUE, bg)))
     console.log(`    <link rel="apple-touch-startup-image" href="${f}" media="(device-width: ${cw}px) and (device-height: ${ch}px) and (-webkit-device-pixel-ratio: ${r}) and (orientation: portrait) and (prefers-color-scheme: ${scheme})" />`)
   }
 }

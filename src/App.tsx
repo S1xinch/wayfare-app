@@ -28,7 +28,7 @@ export default function App() {
     <>
       <header className="border-b border-neutral-200 dark:border-[#2d333f]">
         <nav aria-label="Main" className="mx-auto flex max-w-[1216px] items-center justify-between px-4 py-3">
-          <Link to="/" className="text-lg font-semibold text-[#1a202c] dark:text-slate-100">Tripsy</Link>
+          <Link to="/" className="text-lg font-semibold text-[#1a202c] dark:text-slate-100">Wayfare</Link>
           <div className="flex items-center gap-3">
             {!online && <span role="status" className="rounded bg-warning px-2 py-1 text-xs font-semibold text-black">Offline</span>}
             <NavLink to="/" className="min-h-11 content-center px-2">Trips</NavLink>

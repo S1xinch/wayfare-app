@@ -51,7 +51,7 @@ export default function Home() {
           expenses: Array.isArray(t.expenses) ? t.expenses.map((x) => ({ ...x, id: uid() })) : [],
         }))
       }
-    } catch { alert('That file is not a valid Tripsy export.') }
+    } catch { alert('That file is not a valid Wayfare export.') }
   }
 
   return (

@@ -13,8 +13,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'robots.txt'],
       manifest: {
-        name: 'Tripsy',
-        short_name: 'Tripsy',
+        name: 'Wayfare',
+        short_name: 'Wayfare',
         description: 'Plan trips, pack, and track expenses offline.',
         display: 'standalone',
         start_url: './',
