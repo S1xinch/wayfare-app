@@ -20,7 +20,20 @@ const slice = createSlice({
 })
 export const { setTrips, addTrip, deleteTrip, updateTrip } = slice.actions
 
-export const store = configureStore({ reducer: { trips: slice.reducer } })
+// Signed-in email is cached so the UI still shows it offline; the real check is the session cookie (see account.ts).
+const cached = () => { try { return localStorage.wf_user || null } catch { return null } }
+export type SyncState = 'idle' | 'syncing' | 'error' | 'offline'
+const account = createSlice({
+  name: 'account',
+  initialState: { user: cached() as string | null, sync: 'idle' as SyncState, last: '' },
+  reducers: {
+    setUser: (s, a: PayloadAction<string | null>) => { s.user = a.payload },
+    setSync: (s, a: PayloadAction<{ sync: SyncState; last?: string }>) => { s.sync = a.payload.sync; if (a.payload.last) s.last = a.payload.last },
+  },
+})
+export const { setUser, setSync } = account.actions
+
+export const store = configureStore({ reducer: { trips: slice.reducer, account: account.reducer } })
 export type RootState = ReturnType<typeof store.getState>
 export const useAppDispatch = () => useDispatch<typeof store.dispatch>()
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector

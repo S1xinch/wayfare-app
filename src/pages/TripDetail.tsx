@@ -1,6 +1,7 @@
 import { lazy, Suspense, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { deleteTrip, uid, updateTrip, useAppDispatch, useAppSelector } from '../store'
+import { uid, updateTrip, useAppDispatch, useAppSelector } from '../store'
+import { forgetTrip } from '../account'
 import type { Activity, Trip } from '../types'
 import Modal from '../components/Modal'
 import Ideas from '../components/Ideas'
@@ -186,7 +187,7 @@ export default function TripDetail() {
         <p className="mb-6">This cannot be undone.</p>
         <div className="flex justify-end gap-3">
           <button autoFocus className="btn btn-secondary" onClick={() => setConfirm(false)}>Cancel</button>
-          <button className="btn btn-danger" onClick={() => { dispatch(deleteTrip(trip.id)); nav('/') }}>Delete</button>
+          <button className="btn btn-danger" onClick={() => { forgetTrip(trip.id); nav('/') }}>Delete</button>
         </div>
       </Modal>
     </>

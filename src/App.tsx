@@ -3,6 +3,9 @@ import { Link, NavLink, Route, Routes } from 'react-router-dom'
 import Home from './pages/Home'
 import TripDetail from './pages/TripDetail'
 import { Privacy, Terms } from './pages/Legal'
+import Auth from './pages/Auth'
+import Account from './pages/Account'
+import { useAppSelector } from './store'
 
 const standalone = matchMedia('(display-mode: standalone)').matches || (navigator as { standalone?: boolean }).standalone === true
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
@@ -24,6 +27,7 @@ function toggleDark() {
 
 export default function App() {
   const online = useOnline()
+  const user = useAppSelector((s) => s.account.user)
   return (
     <>
       <header className="border-b border-neutral-200 dark:border-[#2d333f]">
@@ -32,6 +36,7 @@ export default function App() {
           <div className="flex items-center gap-3">
             {!online && <span role="status" className="rounded bg-warning px-2 py-1 text-xs font-semibold text-black">Offline</span>}
             <NavLink to="/" className="min-h-11 content-center px-2">Trips</NavLink>
+            <NavLink to={user ? '/account' : '/login'} className="min-h-11 content-center px-2">{user ? 'Account' : 'Sign in'}</NavLink>
             <button className="btn btn-secondary" onClick={toggleDark} aria-label="Toggle dark mode">Theme</button>
           </div>
         </nav>
@@ -40,6 +45,12 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/trip/:id" element={<TripDetail />} />
+          <Route path="/login" element={<Auth mode="login" />} />
+          <Route path="/register" element={<Auth mode="register" />} />
+          <Route path="/forgot" element={<Auth mode="forgot" />} />
+          <Route path="/reset" element={<Auth mode="reset" />} />
+          <Route path="/verify" element={<Auth mode="verify" />} />
+          <Route path="/account" element={<Account />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="*" element={<p>Page not found. <Link className="underline" to="/">Go home</Link></p>} />

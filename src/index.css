@@ -48,3 +48,13 @@ button, nav a, summary { touch-action: manipulation; -webkit-user-select: none; 
 .dark .caption { color: #94a3b8; }
 .mono { font-family: Monaco, "Courier New", monospace; font-size: 13px; }
 .leaflet-container { z-index: 0; }
+
+/* Ideas tab: "Add" confirmation */
+.btn-added { background: #10b981; border: 1px solid #10b981; color: #fff; animation: added-pop .5s cubic-bezier(.34, 1.56, .64, 1); }
+.btn-added:disabled { opacity: 1; cursor: default; }
+.btn-added .check { display: inline-block; animation: added-check .4s .1s cubic-bezier(.34, 1.56, .64, 1) both; }
+.idea-flash { animation: idea-flash 1.2s ease-out; }
+@keyframes added-pop { 0% { transform: scale(.88); } 55% { transform: scale(1.12); } 100% { transform: scale(1); } }
+@keyframes added-check { from { transform: scale(0) rotate(-40deg); } to { transform: none; } }
+@keyframes idea-flash { 0% { background-color: rgba(16, 185, 129, .25); } 100% { background-color: transparent; } }
+@media (prefers-reduced-motion: reduce) { .btn-added, .btn-added .check, .idea-flash { animation: none; } }

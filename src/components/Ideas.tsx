@@ -10,6 +10,7 @@ export default function Ideas({ trip }: { trip: Trip }) {
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
   const [dayId, setDayId] = useState(trip.itinerary[0]?.id ?? '')
+  const [added, setAdded] = useState<string[]>([]) // idea ids showing the "Added" confirmation
   const ctl = useRef<AbortController>(undefined)
   const daily = dailyBudget(trip, new Date().toISOString().slice(0, 10))
 
@@ -26,6 +27,8 @@ export default function Ideas({ trip }: { trip: Trip }) {
   function add(i: Idea) {
     const act = { id: uid(), time: '10:00', title: i.name, location: trip.destination, description: i.kind, lat: i.lat, lng: i.lng }
     dispatch(updateTrip({ id: trip.id, itinerary: trip.itinerary.map((d) => d.id === dayId ? { ...d, activities: [...d.activities, act].sort((a, b) => a.time.localeCompare(b.time)) } : d) }))
+    setAdded((a) => [...a, i.id])
+    setTimeout(() => setAdded((a) => a.filter((x) => x !== i.id)), 1800) // revert so it can be added to another day
   }
 
   return (
@@ -48,12 +51,15 @@ export default function Ideas({ trip }: { trip: Trip }) {
           </label>
           <ul className="space-y-2">
             {ideas.map((i) => (
-              <li key={i.id} className="card flex items-center justify-between gap-3 !py-3">
+              <li key={i.id} className={`card flex items-center justify-between gap-3 !py-3 ${added.includes(i.id) ? 'idea-flash' : ''}`}>
                 <div>
                   <strong>{i.name}</strong>
                   <p className="caption">{i.kind} · {i.cost === 0 ? (i.known ? 'Free' : 'Likely free') : `~${fmt(i.cost, 'USD')}${i.known ? '' : ' (est.)'}`}</p>
                 </div>
-                <button className="btn btn-secondary" disabled={!dayId} onClick={() => add(i)} aria-label={`Add ${i.name} to itinerary`}>Add</button>
+                <button className={`btn min-w-24 ${added.includes(i.id) ? 'btn-added' : 'btn-secondary'}`} disabled={!dayId || added.includes(i.id)} onClick={() => add(i)}
+                  aria-label={added.includes(i.id) ? `${i.name} added to itinerary` : `Add ${i.name} to itinerary`}>
+                  {added.includes(i.id) ? <><span aria-hidden className="check">✓</span> Added</> : 'Add'}
+                </button>
               </li>
             ))}
           </ul>

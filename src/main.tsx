@@ -3,13 +3,15 @@ import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 import { registerSW } from 'virtual:pwa-register'
 import { store, initStore } from './store'
+import { initAccount } from './account'
 import App from './App'
 import './index.css'
 
 registerSW({ immediate: true })
 // hold the startup logo for at least 2s, so the full animation plays so it reads as a splash instead of a flash
-Promise.all([initStore(), new Promise((r) => setTimeout(r, 2000))]).then(() =>
+Promise.all([initStore(), new Promise((r) => setTimeout(r, 2000))]).then(() => {
   createRoot(document.getElementById('root')!).render(
     <Provider store={store}><HashRouter><App /></HashRouter></Provider>,
-  ),
-)
+  )
+  initAccount()
+})
