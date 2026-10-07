@@ -1,0 +1,50 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary-600: #0066cc;
+  --color-primary-700: #0052a3;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  font-size: 14px; line-height: 1.5;
+  background: #f9fafb; color: #4b5563;
+  overscroll-behavior: none; -webkit-tap-highlight-color: transparent;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
+}
+.dark body { background: #0f1419; color: #cbd5e1; }
+h1, h2, h3 { color: #1a202c; }
+.dark h1, .dark h2, .dark h3 { color: #f1f5f9; }
+h1 { font-size: 32px; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; }
+h2 { font-size: 24px; font-weight: 600; line-height: 1.3; }
+h3 { font-size: 18px; font-weight: 600; }
+button, nav a, summary { touch-action: manipulation; -webkit-user-select: none; user-select: none; }
+:focus-visible { outline: 2px solid #0066cc; outline-offset: 2px; }
+.dark :focus-visible { outline-color: #60a5fa; }
+
+/* component classes (kept in CSS so TSX stays readable) */
+.card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.dark .card { background: #1a1f2e; border-color: #2d333f; box-shadow: none; }
+.btn { padding: 12px 20px; border-radius: 6px; font-weight: 600; background: #0066cc; color: #fff; min-height: 44px; cursor: pointer; transition: background 200ms ease-out; }
+.btn:hover { background: #0052a3; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn-secondary { background: transparent; color: #0066cc; border: 1px solid #e5e7eb; }
+.btn-secondary:hover { background: #f3f4f6; }
+.dark .btn-secondary { color: #60a5fa; border-color: #2d333f; }
+.dark .btn-secondary:hover { background: #1a1f2e; }
+.btn-danger { background: #ef4444; } .btn-danger:hover { background: #dc2626; }
+.input { width: 100%; padding: 12px 14px; border: 1px solid #e5e7eb; border-radius: 6px; background: #fff; color: inherit; min-height: 44px; font-size: 16px; }
+.dark .input { background: #0f1419; border-color: #2d333f; }
+.input:focus { border-color: #0066cc; outline: 2px solid #0066cc; outline-offset: 0; }
+.label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: #1a202c; }
+.dark .label { color: #f1f5f9; }
+.caption { font-size: 12px; font-weight: 500; color: #4b5563; }
+.dark .caption { color: #94a3b8; }
+.mono { font-family: Monaco, "Courier New", monospace; font-size: 13px; }
+.leaflet-container { z-index: 0; }
