@@ -28,8 +28,8 @@ export default async function Home() {
 
   return (
     <>
-      <section className="bg-brand text-white">
-        <div className="wrap py-12">
+      <section className="hero text-white">
+        <div className="wrap py-12 sm:py-16">
           <h1 className="mb-2">Compare flight prices</h1>
           <p className="mb-6 max-w-2xl">
             Live fares from Google Flights, price history for every route you search, and an email when a price drops.

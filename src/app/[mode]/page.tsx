@@ -20,7 +20,7 @@ export default async function AuthPage({
   if (!MODES.includes(mode)) notFound();
   const { token } = await searchParams;
   return (
-    <div className="wrap">
+    <div className="wrap auth-shell">
       <AuthForm mode={mode as "login" | "register" | "forgot" | "reset"} token={token ?? ""} />
     </div>
   );

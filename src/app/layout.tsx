@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
-import { BackButton, PwaInit, TabBar } from "@/components/Pwa";
+import { BackButton, PwaInit, TabBar, TopNav } from "@/components/Pwa";
 import { userId } from "@/lib/auth";
 import { BRAND, startupImages } from "@/lib/pwa";
 import "./globals.css";
@@ -51,28 +51,29 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <div className="wrap flex items-center justify-between gap-4" style={{ paddingTop: 8, paddingBottom: 8, minHeight: 56 }}>
             <div className="flex items-center gap-1">
               <BackButton />
-              <Link href="/" className="brand">Wayfare</Link>
+              <Link href="/" className="brand">
+                <svg className="brand-mark" viewBox="0 0 96 96" aria-hidden="true">
+                  <rect width="96" height="96" rx="24" fill="rgb(255 255 255 / 0.16)" />
+                  <g transform="translate(48 48) scale(.78) translate(-48 -47)">
+                    <path d="M14 30 32 68 48 40 64 68 82 30" fill="none" stroke="#fff" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" />
+                    <circle cx="82" cy="30" r="8" fill="#52ab98" stroke="#fff" strokeWidth="2.6" />
+                  </g>
+                </svg>
+                Wayfare
+              </Link>
             </div>
-            <nav aria-label="Account" className="topnav flex gap-4">
-              <Link href="/" className="underline">Flights</Link>
-              <Link href="/trips" className="underline">Trips</Link>
-              {uid ? (
-                <Link href="/dashboard" className="underline">Dashboard</Link>
-              ) : (
-                <>
-                  <Link href="/login" className="underline">Sign in</Link>
-                  <Link href="/register" className="underline">Create account</Link>
-                </>
-              )}
-            </nav>
+            <TopNav signedIn={!!uid} />
           </div>
         </header>
         <main id="main">{children}</main>
-        <footer className="wrap mt-8 flex flex-wrap gap-4 text-sm">
-          <Link href="/accounts">How accounts work</Link>
-          <Link href="/privacy">Privacy Policy</Link>
-          <Link href="/terms">Terms and Conditions</Link>
-          <a href="https://github.com/S1xinch/wayfare">Source code</a>
+        <footer className="wrap site-footer">
+          <nav aria-label="Footer">
+            <Link href="/accounts">How accounts work</Link>
+            <Link href="/privacy">Privacy Policy</Link>
+            <Link href="/terms">Terms and Conditions</Link>
+            <a href="https://github.com/S1xinch/wayfare">Source code</a>
+          </nav>
+          <p>© {new Date().getFullYear()} Wayfare. Free, no affiliate links.</p>
         </footer>
         <TabBar signedIn={!!uid} />
       </body>

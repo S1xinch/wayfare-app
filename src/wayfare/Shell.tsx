@@ -26,13 +26,21 @@ export default function Shell({ children }: { children: ReactNode }) {
   return (
     <Provider store={store}>
       <div className={`wf${dark ? ' dark' : ''}`}>
-        <div className="mb-2 flex flex-wrap items-center justify-end gap-3">
-          <label className="label m-0 flex items-center gap-2">Currency
-            <select className="input" style={{ width: "auto" }} value={cur} onChange={(e) => setCurrency(e.target.value)}>
+        <div className="wf-toolbar">
+          <label>Currency
+            <select className="input" value={cur} onChange={(e) => setCurrency(e.target.value)}>
               {CURRENCIES.map((c) => <option key={c} value={c}>{currencyName(c)}</option>)}
             </select>
           </label>
-          <button className="btn btn-secondary" onClick={() => { toggleDark(); setDark((d) => !d) }} aria-label="Toggle dark mode">Theme</button>
+          <button type="button" className="btn btn-plain" aria-pressed={dark} aria-label="Dark mode" title="Dark mode" onClick={() => { toggleDark(); setDark((d) => !d) }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              {dark ? (
+                <><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></>
+              ) : (
+                <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+              )}
+            </svg>
+          </button>
         </div>
         {ready ? children : <p role="status">Loading your trips…</p>}
       </div>

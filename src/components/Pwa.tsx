@@ -59,6 +59,30 @@ const icon = (d: string) => (
   </svg>
 );
 
+/** Header navigation. The current page gets aria-current, which the stylesheet turns into the highlighted pill. */
+export function TopNav({ signedIn }: { signedIn: boolean }) {
+  const path = usePathname();
+  const items: { href: string; label: string; on: boolean; secondary?: boolean }[] = [
+    { href: "/", label: "Flights", on: path === "/" || path.startsWith("/results") },
+    { href: "/trips", label: "Trips", on: path.startsWith("/trips") },
+    ...(signedIn
+      ? [{ href: "/dashboard", label: "Dashboard", on: path.startsWith("/dashboard") }]
+      : [
+          { href: "/login", label: "Sign in", on: path === "/login" },
+          { href: "/register", label: "Create account", on: path === "/register", secondary: true },
+        ]),
+  ];
+  return (
+    <nav aria-label="Main" className="topnav flex">
+      {items.map((i) => (
+        <Link key={i.href} href={i.href} aria-current={i.on ? "page" : undefined} className={i.secondary ? "nav-secondary" : undefined}>
+          {i.label}
+        </Link>
+      ))}
+    </nav>
+  );
+}
+
 /** Bottom tab bar, shown by CSS only in the installed phone app. */
 export function TabBar({ signedIn }: { signedIn: boolean }) {
   const path = usePathname();

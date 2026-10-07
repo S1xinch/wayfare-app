@@ -8,6 +8,10 @@ import Modal from '../components/Modal'
 
 const COLORS = ['#c8d8e4', '#d3e8e2', '#dde7ee', '#e3f1ed', '#cfdfe8']
 const DATE = /^\d{4}-\d\d-\d\d$/
+const activityCount = (t: Trip) => {
+  const n = t.itinerary.reduce((sum, d) => sum + d.activities.length, 0)
+  return `${n} ${n === 1 ? 'activity' : 'activities'}`
+}
 export const fmt = (n: number, cur = 'USD') => { try { return n.toLocaleString(undefined, { style: 'currency', currency: cur }) } catch { return n.toFixed(2) } }
 
 function Field({ label, ...p }: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
@@ -72,7 +76,14 @@ export default function Home() {
       </div>
       <input className="input mb-6" type="search" aria-label="Search trips" placeholder="Search trips" value={q} onChange={(e) => setQ(e.target.value)} />
       {shown.length === 0 ? (
-        <p>{trips.length ? 'No trips match your search.' : 'No trips yet. Create your first one.'}</p>
+        trips.length ? <p>No trips match your search.</p> : (
+          <div className="card empty">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 7l6-3 6 3 6-3v13l-6 3-6-3-6 3zM9 4v13M15 7v13" /></svg>
+            <h2>Plan your first trip</h2>
+            <p className="caption">Itineraries, packing lists, expenses and a map. Everything works offline.</p>
+            <button className="btn" onClick={() => setOpen(true)}>New trip</button>
+          </div>
+        )
       ) : (
         <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {shown.map((t, i) => (
@@ -85,7 +96,7 @@ export default function Home() {
                   <h3>{t.name}</h3>
                   <p>{t.destination}</p>
                   <p className="caption mono">{t.startDate} → {t.endDate}</p>
-                  <p className="caption">Budget {fmt(t.budget, cur)} · {t.itinerary.reduce((n, d) => n + d.activities.length, 0)} activities</p>
+                  <p className="caption">Budget {fmt(t.budget, cur)} · {activityCount(t)}</p>
                   <span className="mt-auto font-semibold text-primary-600 dark:text-[#52ab98]">View trip</span>
                 </div>
               </Link>
