@@ -23,7 +23,7 @@ export default function FlightNumberForm() {
     const r = await fetch(`/api/flightnumber?flight=${encodeURIComponent(code)}&date=${date}`);
     const j = await r.json().catch(() => ({}));
     setBusy(false);
-    if (!r.ok) return setErr(j.error ?? "Could not look that up.");
+    if (!r.ok) return setErr(j.error ?? (r.status >= 500 ? "Flight number lookup is unavailable right now. Try again later." : "Could not look that up."));
     if (!j.found) return setErr(`We could not find ${code} in today's live schedule, so we cannot tell its route. Search by route above instead.`);
     router.push(`/results?${new URLSearchParams({ o: j.o, d: j.d, dep: date, pax: "1", cabin: "economy", fn: code })}`);
   }

@@ -122,7 +122,7 @@ h2 { letter-spacing: -0.01em; }
 .chrome {
   position: sticky; top: 0; z-index: 20; color: #fff;
   padding-top: env(safe-area-inset-top);
-  background: rgba(0, 102, 204, 0.94);
+  background: color-mix(in srgb, var(--color-brand) 94%, transparent);
   -webkit-backdrop-filter: blur(20px) saturate(180%); backdrop-filter: blur(20px) saturate(180%);
 }
 .chrome a { color: #fff; }

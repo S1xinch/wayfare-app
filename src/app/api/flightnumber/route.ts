@@ -15,6 +15,16 @@ const ANON_DAILY = 5; // uncached lookups per day for visitors who are not signe
  * come from the normal search, filtered to the flight number on the results page.
  */
 export async function GET(req: Request) {
+  try {
+    return await lookup(req);
+  } catch (e) {
+    // e.g. Redis unreachable or not configured: answer with JSON so the form can show a message instead of a bare 500
+    console.error("flightnumber failed", e);
+    return json({ error: "Flight number lookup is unavailable right now. Try again later." }, 503);
+  }
+}
+
+async function lookup(req: Request) {
   const rl = await limit(req, "flightnum", 10);
   if (rl) return rl;
 
